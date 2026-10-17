@@ -32,11 +32,12 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env.local
 !.env.example
 
 # vercel
 .vercel
-
+gen-lang-client-0368465078-8b744ddeb9a8.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
