@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-meadow-50: #f0f7f3;
+  --color-meadow-100: #dceee3;
+  --color-meadow-200: #bde0cc;
+  --color-meadow-300: #93cbae;
+  --color-meadow-400: #64b08b;
+  --color-meadow-500: #42956f;
+  --color-meadow-600: #2d7a55;
+  --color-meadow-700: #256245;
+  --color-meadow-800: #204e38;
+  --color-meadow-900: #1b412f;
+  --color-meadow-950: #0d241a;
+
+  --color-peach-bg: #ffe5d9;
+  --color-peach-surface: #fff5ef;
+  --color-peach-border: #f4d0c1;
+}
+
+@layer base {
+  body {
+    background-color: #ffe5d9;
+    color: #1e293b;
+  }
+
+  html[lang="ar"], [dir="rtl"] {
+    font-family: 'Cairo', var(--font-cairo, sans-serif), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  html[lang="en"], [dir="ltr"] {
+    font-family: 'Inter', var(--font-inter, sans-serif), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+}
+
+.font-arabic {
+  font-family: 'Cairo', var(--font-cairo, sans-serif), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Custom scrollbar styled to harmonize with the warm background */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #fce1d4;
+}
+::-webkit-scrollbar-thumb {
+  background: #d8baa9;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #18181b;
+}

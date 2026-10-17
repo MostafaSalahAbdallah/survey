@@ -1,0 +1,615 @@
+{
+  "meta": {
+    "title": {
+      "en": "Frontal Smile Assessment Questionnaire",
+      "ar": "استبيان تقييم الابتسامة من المنظور الأمامي"
+    },
+    "subtitle": {
+      "en": "A scientific study on aesthetic smile perception",
+      "ar": "دراسة علمية حول إدراك جماليات الابتسامة"
+    },
+    "photoRatingInstruction": {
+      "en": "Rate the smile attractiveness, using the scale below the photo where 10 = least attractive going to 100 = most attractive.",
+      "ar": "قيّم مدى جاذبية الابتسامة باستخدام المقياس أسفل الصورة، حيث يمثل الرقم 10 الأقل جاذبية والرقم 100 الأكثر جاذبية."
+    },
+    "photoRankingInstruction": {
+      "en": "Rank the following smiles according to your personal preference, from the most preferred to the least preferred. Click the photos one by one, starting with your first choice.",
+      "ar": "رتّب الابتسامات التالية حسب تفضيلك الشخصي، من الأكثر تفضيلاً إلى الأقل تفضيلاً. اضغط على الصور واحدة تلو الأخرى، بدءاً باختيارك الأول."
+    }
+  },
+  "pages": [
+    {
+      "id": "page1",
+      "title": {
+        "en": "Demographic & Background Information",
+        "ar": "المعلومات الشخصية والمهنية"
+      },
+      "description": {
+        "en": "Please provide your general background information before proceeding to the smile evaluation.",
+        "ar": "يرجى تقديم معلوماتك العامة قبل الانتقال إلى تقييم الابتسامات."
+      },
+      "questions": [
+        {
+          "id": "name",
+          "type": "short_text",
+          "required": true,
+          "minLength": 3,
+          "maxLength": 30,
+          "label": {
+            "en": "Full Name",
+            "ar": "الاسم بالكامل"
+          },
+          "placeholder": {
+            "en": "Enter your name (min 3 characters)",
+            "ar": "أدخل اسمك (3 أحرف على الأقل)"
+          }
+        },
+        {
+          "id": "gender",
+          "type": "single_choice",
+          "required": true,
+          "label": {
+            "en": "Gender",
+            "ar": "الجنس"
+          },
+          "options": [
+            {
+              "value": "male",
+              "label": {
+                "en": "Male",
+                "ar": "ذكر"
+              }
+            },
+            {
+              "value": "female",
+              "label": {
+                "en": "Female",
+                "ar": "أنثى"
+              }
+            }
+          ]
+        },
+        {
+          "id": "age_group",
+          "type": "single_choice",
+          "required": true,
+          "label": {
+            "en": "Age Group",
+            "ar": "الفئة العمرية"
+          },
+          "options": [
+            {
+              "value": "18_24",
+              "label": {
+                "en": "18 to 24 years old",
+                "ar": "من 18 إلى 24 سنة"
+              }
+            },
+            {
+              "value": "25_34",
+              "label": {
+                "en": "25 to 34 years old",
+                "ar": "من 25 إلى 34 سنة"
+              }
+            },
+            {
+              "value": "35_45",
+              "label": {
+                "en": "35 to 45 years old",
+                "ar": "من 35 إلى 45 سنة"
+              }
+            },
+            {
+              "value": "over_45",
+              "label": {
+                "en": "Older than 45",
+                "ar": "أكثر من 45 سنة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "occupation",
+          "type": "single_choice",
+          "required": true,
+          "label": {
+            "en": "Occupation",
+            "ar": "المهنة"
+          },
+          "options": [
+            {
+              "value": "orthodontist",
+              "label": {
+                "en": "Orthodontist",
+                "ar": "أخصائي تقويم أسنان"
+              }
+            },
+            {
+              "value": "dentist",
+              "label": {
+                "en": "Dentist",
+                "ar": "طبيب أسنان"
+              }
+            },
+            {
+              "value": "non_dental",
+              "label": {
+                "en": "Non-dental profession",
+                "ar": "مهنة غير متعلقة بطب الأسنان"
+              }
+            }
+          ]
+        },
+        {
+          "id": "work_experience",
+          "type": "number",
+          "required": true,
+          "min": 0,
+          "max": 60,
+          "label": {
+            "en": "Years of work experience",
+            "ar": "عدد سنوات الخبرة العملية"
+          },
+          "placeholder": {
+            "en": "e.g. 5",
+            "ar": "مثال: 5"
+          },
+          "showIf": {
+            "question": "occupation",
+            "in": ["orthodontist", "dentist"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "page2",
+      "title": {
+        "en": "Smile Rating (Set 1)",
+        "ar": "تقييم الابتسامات (المجموعة الأولى)"
+      },
+      "questions": [
+        {
+          "id": "R01",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "straight-0",
+            "src": "/photos/straight-0.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R02",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "slight-0",
+            "src": "/photos/slight-0.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R03",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "banana-0",
+            "src": "/photos/banana-0.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R04",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "straight-1-green",
+            "src": "/photos/straight-1-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R05",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "slight-1-green",
+            "src": "/photos/slight-1-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R06",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "banana-1-green",
+            "src": "/photos/banana-1-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R07",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "straight-1-red",
+            "src": "/photos/straight-1-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        }
+      ]
+    },
+    {
+      "id": "page3",
+      "title": {
+        "en": "Smile Rating (Set 2)",
+        "ar": "تقييم الابتسامات (المجموعة الثانية)"
+      },
+      "questions": [
+        {
+          "id": "R08",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "slight-1-red",
+            "src": "/photos/slight-1-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R09",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "banana-1-red",
+            "src": "/photos/banana-1-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R10",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "straight-2-green",
+            "src": "/photos/straight-2-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R11",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "slight-2-green",
+            "src": "/photos/slight-2-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R12",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "banana-2-green",
+            "src": "/photos/banana-2-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R13",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "straight-2-red",
+            "src": "/photos/straight-2-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R14",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "slight-2-red",
+            "src": "/photos/slight-2-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        }
+      ]
+    },
+    {
+      "id": "page4",
+      "title": {
+        "en": "Smile Rating (Set 3)",
+        "ar": "تقييم الابتسامات (المجموعة الثالثة)"
+      },
+      "questions": [
+        {
+          "id": "R15",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "banana-2-red",
+            "src": "/photos/banana-2-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R16",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "straight-3-green",
+            "src": "/photos/straight-3-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R17",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "slight-3-green",
+            "src": "/photos/slight-3-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R18",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "banana-3-green",
+            "src": "/photos/banana-3-green.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R19",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "straight-3-red",
+            "src": "/photos/straight-3-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R20",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "slight-3-red",
+            "src": "/photos/slight-3-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "id": "R21",
+          "type": "photo_rating",
+          "required": true,
+          "photo": {
+            "id": "banana-3-red",
+            "src": "/photos/banana-3-red.jpg"
+          },
+          "min": 10,
+          "max": 100,
+          "step": 10
+        }
+      ]
+    },
+    {
+      "id": "page5",
+      "title": {
+        "en": "Smile Ranking (Questions 1 & 2)",
+        "ar": "ترتيب الابتسامات (السؤالان 1 و 2)"
+      },
+      "questions": [
+        {
+          "id": "Q1",
+          "type": "photo_ranking",
+          "required": true,
+          "shuffle": false,
+          "photos": [
+            {
+              "id": "straight-0-green",
+              "src": "/photos/straight-0.jpg"
+            },
+            {
+              "id": "straight-1-green",
+              "src": "/photos/straight-1-green.jpg"
+            },
+            {
+              "id": "straight-2-green",
+              "src": "/photos/straight-2-green.jpg"
+            },
+            {
+              "id": "straight-3-green",
+              "src": "/photos/straight-3-green.jpg"
+            }
+          ]
+        },
+        {
+          "id": "Q2",
+          "type": "photo_ranking",
+          "required": true,
+          "shuffle": false,
+          "photos": [
+            {
+              "id": "slight-0-green",
+              "src": "/photos/slight-0.jpg"
+            },
+            {
+              "id": "slight-1-green",
+              "src": "/photos/slight-1-green.jpg"
+            },
+            {
+              "id": "slight-2-green",
+              "src": "/photos/slight-2-green.jpg"
+            },
+            {
+              "id": "slight-3-green",
+              "src": "/photos/slight-3-green.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page6",
+      "title": {
+        "en": "Smile Ranking (Questions 3 & 4)",
+        "ar": "ترتيب الابتسامات (السؤالان 3 و 4)"
+      },
+      "questions": [
+        {
+          "id": "Q3",
+          "type": "photo_ranking",
+          "required": true,
+          "shuffle": false,
+          "photos": [
+            {
+              "id": "banana-0-green",
+              "src": "/photos/banana-0.jpg"
+            },
+            {
+              "id": "banana-1-green",
+              "src": "/photos/banana-1-green.jpg"
+            },
+            {
+              "id": "banana-2-green",
+              "src": "/photos/banana-2-green.jpg"
+            },
+            {
+              "id": "banana-3-green",
+              "src": "/photos/banana-3-green.jpg"
+            }
+          ]
+        },
+        {
+          "id": "Q4",
+          "type": "photo_ranking",
+          "required": true,
+          "shuffle": false,
+          "photos": [
+            {
+              "id": "straight-0-red",
+              "src": "/photos/straight-0.jpg"
+            },
+            {
+              "id": "straight-1-red",
+              "src": "/photos/straight-1-red.jpg"
+            },
+            {
+              "id": "straight-2-red",
+              "src": "/photos/straight-2-red.jpg"
+            },
+            {
+              "id": "straight-3-red",
+              "src": "/photos/straight-3-red.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page7",
+      "title": {
+        "en": "Smile Ranking (Questions 5 & 6)",
+        "ar": "ترتيب الابتسامات (السؤالان 5 و 6)"
+      },
+      "questions": [
+        {
+          "id": "Q5",
+          "type": "photo_ranking",
+          "required": true,
+          "shuffle": false,
+          "photos": [
+            {
+              "id": "slight-0-red",
+              "src": "/photos/slight-0.jpg"
+            },
+            {
+              "id": "slight-1-red",
+              "src": "/photos/slight-1-red.jpg"
+            },
+            {
+              "id": "slight-2-red",
+              "src": "/photos/slight-2-red.jpg"
+            },
+            {
+              "id": "slight-3-red",
+              "src": "/photos/slight-3-red.jpg"
+            }
+          ]
+        },
+        {
+          "id": "Q6",
+          "type": "photo_ranking",
+          "required": true,
+          "shuffle": false,
+          "photos": [
+            {
+              "id": "banana-0-red",
+              "src": "/photos/banana-0.jpg"
+            },
+            {
+              "id": "banana-1-red",
+              "src": "/photos/banana-1-red.jpg"
+            },
+            {
+              "id": "banana-2-red",
+              "src": "/photos/banana-2-red.jpg"
+            },
+            {
+              "id": "banana-3-red",
+              "src": "/photos/banana-3-red.jpg"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
