@@ -35,6 +35,12 @@ yarn-error.log*
 .env.local
 !.env.example
 
+# Add the credential file to .gitignore
+echo gen-lang-client-0368465078-8b744ddeb9a8.json >> .gitignore
+
+# Stop tracking it, but keep the local file
+git rm --cached gen-lang-client-0368465078-8b744ddeb9a8.json
+
 # vercel
 .vercel
 gen-lang-client-0368465078-8b744ddeb9a8.json
