@@ -90,8 +90,8 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
         )}
       </div>
 
-      {/* 2 x 2 Photo Grid: maintained on mobile and desktop per Section 5.3 */}
-      <div className="w-full max-w-2xl grid grid-cols-2 gap-3 sm:gap-4">
+      {/* Photo Grid: 1 column on mobile, 2 columns on tablet/desktop */}
+      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {displayPhotos.map((photo, index) => {
           const rankIndex = rankedIds.indexOf(photo.id);
           const isRanked = rankIndex >= 0;
@@ -101,10 +101,14 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
             ? `Photo ${index + 1}, ranked ${rankNumber}`
             : `Photo ${index + 1}, click to rank`;
 
+          const photoSrc = photo.src.includes('?')
+            ? `${photo.src}&v=crop2`
+            : `${photo.src}?v=crop2`;
+
           return (
             <div
               key={photo.id}
-              className={`group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center aspect-4/3 sm:aspect-16/11 ${
+              className={`group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center h-60 sm:h-auto sm:aspect-16/11 ${
                 isRanked
                   ? 'border-slate-900 bg-slate-50/50 shadow-md ring-2 ring-slate-900/20'
                   : 'border-slate-200 hover:border-slate-400 hover:shadow-xs'
@@ -118,10 +122,11 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
                 className="w-full h-full relative cursor-pointer focus:outline-hidden p-2"
               >
                 <Image
-                  src={photo.src}
+                  src={photoSrc}
                   alt={`Ranking photo ${photo.id}`}
                   fill
-                  sizes="(max-width: 640px) 50vw, 400px"
+                  unoptimized
+                  sizes="(max-width: 640px) 100vw, 400px"
                   className="object-contain p-1 sm:p-2"
                   priority
                 />
@@ -166,7 +171,13 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
       <ZoomModal
         isOpen={Boolean(zoomPhoto)}
         onClose={() => setZoomPhoto(null)}
-        photoSrc={zoomPhoto ? zoomPhoto.src : null}
+        photoSrc={
+          zoomPhoto
+            ? zoomPhoto.src.includes('?')
+              ? `${zoomPhoto.src}&v=crop2`
+              : `${zoomPhoto.src}?v=crop2`
+            : null
+        }
         photoAlt={zoomPhoto ? `Smile ${zoomPhoto.id}` : ''}
         language={language}
       />

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Language } from '@/lib/types';
 import { getTranslation } from '@/lib/i18n';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Maximize2 } from 'lucide-react';
 
 interface QuestionWrapperProps {
   id: string;
@@ -59,9 +59,10 @@ export const QuestionWrapper: React.FC<QuestionWrapperProps> = ({
         )}
 
         {instruction && (
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
-            {instruction}
-          </p>
+          <div className="mt-2.5 mb-1 p-3 rounded-xl bg-[#fff8f5] border border-orange-200/90 text-orange-950 text-xs sm:text-sm flex items-center gap-2.5 font-medium shadow-2xs">
+            <Maximize2 className="w-4 h-4 shrink-0 text-orange-700" />
+            <span>{instruction}</span>
+          </div>
         )}
       </div>
 

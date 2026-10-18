@@ -3,20 +3,18 @@
 import React from 'react';
 import { Language } from '@/lib/types';
 import { getTranslation } from '@/lib/i18n';
-import { CheckCircle2, Award, FileCheck } from 'lucide-react';
+import { CheckCircle2, Award } from 'lucide-react';
 
 interface ThankYouProps {
   language: Language;
-  submissionId: string;
+  submissionId?: string;
 }
 
 export const ThankYou: React.FC<ThankYouProps> = ({
   language,
-  submissionId,
 }) => {
   const thanksTitle = getTranslation('thanksTitle', language);
   const thanksBody = getTranslation('thanksBody', language);
-  const submissionIdLabel = getTranslation('submissionId', language);
 
   return (
     <div className="w-full max-w-2xl mx-auto py-12 px-4 animate-in fade-in zoom-in-95 duration-500 text-center">
@@ -35,22 +33,11 @@ export const ThankYou: React.FC<ThankYouProps> = ({
           {thanksTitle}
         </h2>
 
-        <p className="text-base text-slate-600 max-w-lg mx-auto leading-relaxed mb-8">
+        <p className="text-base text-slate-600 max-w-lg mx-auto leading-relaxed mb-6">
           {thanksBody}
         </p>
 
-        {/* Verification Card */}
-        <div className="w-full bg-white/90 rounded-2xl p-4 border border-[#f4d0c1] text-left sm:text-center flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-2 text-slate-700 text-xs font-medium">
-            <FileCheck className="w-4 h-4 text-black" />
-            <span>{submissionIdLabel}:</span>
-          </div>
-          <code className="px-3 py-1 bg-white rounded-lg border border-slate-300 font-mono text-xs font-bold text-slate-900 tracking-wider">
-            {submissionId}
-          </code>
-        </div>
-
-        <div className="mt-8 pt-6 border-t border-[#f4d0c1]/60 text-xs text-slate-500">
+        <div className="mt-6 pt-6 border-t border-[#f4d0c1]/60 text-xs text-slate-500">
           You may now safely close this window. Thank you for advancing orthodontic science.
         </div>
       </div>

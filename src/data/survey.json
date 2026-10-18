@@ -167,11 +167,19 @@
         "en": "Smile Rating (Set 1)",
         "ar": "تقييم الابتسامات (المجموعة الأولى)"
       },
+      "description": {
+        "en": "Tip: You can maximize any photo to full screen using the button in its top-right corner.",
+        "ar": "تلميح: يمكنك تكبير أي صورة لعرضها بالشاشة الكاملة باستخدام الزر الموجود في الزاوية العلوية للصورة."
+      },
       "questions": [
         {
           "id": "R01",
           "type": "photo_rating",
           "required": true,
+          "instruction": {
+            "en": "You can click the button in the top-right corner of the photo to maximize its size.",
+            "ar": "يمكنك الضغط على الزر في الزاوية العلوية للصورة لتكبير حجمها وعرضها بالشاشة الكاملة."
+          },
           "photo": {
             "id": "straight-0",
             "src": "/photos/straight-0.jpg"
@@ -203,7 +211,16 @@
           "min": 10,
           "max": 100,
           "step": 10
-        },
+        }
+      ]
+    },
+    {
+      "id": "page3",
+      "title": {
+        "en": "Smile Rating (Set 2)",
+        "ar": "تقييم الابتسامات (المجموعة الثانية)"
+      },
+      "questions": [
         {
           "id": "R04",
           "type": "photo_rating",
@@ -239,7 +256,16 @@
           "min": 10,
           "max": 100,
           "step": 10
-        },
+        }
+      ]
+    },
+    {
+      "id": "page4",
+      "title": {
+        "en": "Smile Rating (Set 3)",
+        "ar": "تقييم الابتسامات (المجموعة الثالثة)"
+      },
+      "questions": [
         {
           "id": "R07",
           "type": "photo_rating",
@@ -251,16 +277,7 @@
           "min": 10,
           "max": 100,
           "step": 10
-        }
-      ]
-    },
-    {
-      "id": "page3",
-      "title": {
-        "en": "Smile Rating (Set 2)",
-        "ar": "تقييم الابتسامات (المجموعة الثانية)"
-      },
-      "questions": [
+        },
         {
           "id": "R08",
           "type": "photo_rating",
@@ -284,7 +301,16 @@
           "min": 10,
           "max": 100,
           "step": 10
-        },
+        }
+      ]
+    },
+    {
+      "id": "page5",
+      "title": {
+        "en": "Smile Rating (Set 4)",
+        "ar": "تقييم الابتسامات (المجموعة الرابعة)"
+      },
+      "questions": [
         {
           "id": "R10",
           "type": "photo_rating",
@@ -320,7 +346,16 @@
           "min": 10,
           "max": 100,
           "step": 10
-        },
+        }
+      ]
+    },
+    {
+      "id": "page6",
+      "title": {
+        "en": "Smile Rating (Set 5)",
+        "ar": "تقييم الابتسامات (المجموعة الخامسة)"
+      },
+      "questions": [
         {
           "id": "R13",
           "type": "photo_rating",
@@ -344,16 +379,7 @@
           "min": 10,
           "max": 100,
           "step": 10
-        }
-      ]
-    },
-    {
-      "id": "page4",
-      "title": {
-        "en": "Smile Rating (Set 3)",
-        "ar": "تقييم الابتسامات (المجموعة الثالثة)"
-      },
-      "questions": [
+        },
         {
           "id": "R15",
           "type": "photo_rating",
@@ -365,7 +391,16 @@
           "min": 10,
           "max": 100,
           "step": 10
-        },
+        }
+      ]
+    },
+    {
+      "id": "page7",
+      "title": {
+        "en": "Smile Rating (Set 6)",
+        "ar": "تقييم الابتسامات (المجموعة السادسة)"
+      },
+      "questions": [
         {
           "id": "R16",
           "type": "photo_rating",
@@ -401,7 +436,16 @@
           "min": 10,
           "max": 100,
           "step": 10
-        },
+        }
+      ]
+    },
+    {
+      "id": "page8",
+      "title": {
+        "en": "Smile Rating (Set 7)",
+        "ar": "تقييم الابتسامات (المجموعة السابعة)"
+      },
+      "questions": [
         {
           "id": "R19",
           "type": "photo_rating",
@@ -441,7 +485,7 @@
       ]
     },
     {
-      "id": "page5",
+      "id": "page9",
       "title": {
         "en": "Smile Ranking (Questions 1 & 2)",
         "ar": "ترتيب الابتسامات (السؤالان 1 و 2)"
@@ -498,7 +542,7 @@
       ]
     },
     {
-      "id": "page6",
+      "id": "page10",
       "title": {
         "en": "Smile Ranking (Questions 3 & 4)",
         "ar": "ترتيب الابتسامات (السؤالان 3 و 4)"
@@ -555,7 +599,7 @@
       ]
     },
     {
-      "id": "page7",
+      "id": "page11",
       "title": {
         "en": "Smile Ranking (Questions 5 & 6)",
         "ar": "ترتيب الابتسامات (السؤالان 5 و 6)"

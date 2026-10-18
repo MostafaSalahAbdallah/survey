@@ -33,29 +33,47 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
   const mostText = getTranslation('mostAttractive', language);
   const zoomText = getTranslation('zoom', language);
 
+  const photoSrc = question.photo.src.includes('?')
+    ? `${question.photo.src}&v=crop2`
+    : `${question.photo.src}?v=crop2`;
+
   return (
     <div className="flex flex-col items-center w-full">
       {/* Photo Container */}
       <div className="relative w-full max-w-xl h-60 sm:h-72 md:h-80 bg-[#fff8f5] rounded-2xl overflow-hidden border border-[#f4d0c1] shadow-xs mb-5 group">
         <Image
-          src={question.photo.src}
+          src={photoSrc}
           alt={`Smile photo ${question.photo.id}`}
           fill
+          unoptimized
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 600px, 800px"
           className="object-contain p-2"
           priority
         />
 
         {/* Magnifier zoom button */}
-        <button
-          type="button"
-          onClick={() => setIsZoomOpen(true)}
-          aria-label={zoomText}
-          title={zoomText}
-          className="absolute top-3 right-3 p-2 rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
-        >
-          <Maximize2 className="w-4 h-4 text-black" />
-        </button>
+        <div className="absolute top-3 right-3 flex items-center z-10">
+          {question.instruction ? (
+            <button
+              type="button"
+              onClick={() => setIsZoomOpen(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 bg-white/95 hover:bg-white px-3 py-2 rounded-xl border border-slate-300 shadow-md backdrop-blur-xs transition-all hover:scale-105 active:scale-95 cursor-pointer animate-pulse"
+            >
+              <Maximize2 className="w-3.5 h-3.5 text-black" />
+              <span>{isRTL ? 'اضغط لتكبير الصورة' : 'Click to enlarge photo'}</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsZoomOpen(true)}
+              aria-label={zoomText}
+              title={zoomText}
+              className="p-2 rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
+            >
+              <Maximize2 className="w-4 h-4 text-black" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Rating Scale: RTL for Arabic (10 on right to 100 on left), LTR for English */}
@@ -99,7 +117,7 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
       <ZoomModal
         isOpen={isZoomOpen}
         onClose={() => setIsZoomOpen(false)}
-        photoSrc={question.photo.src}
+        photoSrc={photoSrc}
         photoAlt={`Smile photo ${question.photo.id}`}
         language={language}
       />

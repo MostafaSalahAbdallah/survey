@@ -28,6 +28,7 @@ export interface QuestionBase {
   type: QuestionType;
   required: boolean;
   label?: Record<Language, string>;
+  instruction?: Record<Language, string>;
   showIf?: ShowIfConfig;
 }
 
