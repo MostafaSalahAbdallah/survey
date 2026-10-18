@@ -87,10 +87,14 @@ export function useSurvey({ survey, language }: UseSurveyProps) {
   );
 
   // Check if current page is valid (live check for Next button disabled state)
+  // [TEMPORARY FOR TESTING] Always true so the Next button is always enabled
   const isCurrentPageValid = useMemo(() => {
+    return true;
+    /* REVERT ME:
     if (!currentPage) return false;
     const errors = validatePage(currentPage, answers);
     return Object.keys(errors).length === 0;
+    */
   }, [currentPage, answers]);
 
   const scrollToQuestion = (questionId: string) => {
@@ -103,6 +107,7 @@ export function useSurvey({ survey, language }: UseSurveyProps) {
   const handleNext = useCallback(() => {
     if (!currentPage) return;
 
+    /* REVERT ME:
     const errors = validatePage(currentPage, answers);
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
@@ -110,6 +115,7 @@ export function useSurvey({ survey, language }: UseSurveyProps) {
       scrollToQuestion(firstErrorId);
       return;
     }
+    */
 
     setValidationErrors({});
     if (currentPageIndex < totalPages - 1) {
