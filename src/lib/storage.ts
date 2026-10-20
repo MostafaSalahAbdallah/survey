@@ -75,6 +75,10 @@ export function clearSurveySession(): void {
     window.sessionStorage.removeItem(STORAGE_KEYS.ANSWERS);
     window.sessionStorage.removeItem(STORAGE_KEYS.CURRENT_PAGE);
     window.sessionStorage.removeItem(STORAGE_KEYS.START_TIME);
+    // Clear question shuffle cache
+    for (let i = 1; i <= 6; i++) {
+      window.sessionStorage.removeItem(`frontal_smile_shuffle_Q${i}`);
+    }
     // Keep LANGUAGE so thank you page stays in same language
   } catch (e) {
     console.error('Failed to clear survey session', e);

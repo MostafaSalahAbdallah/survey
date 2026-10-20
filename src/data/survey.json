@@ -238,8 +238,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "straight-2-green",
-            "src": "/photos/straight-2-green.jpg"
+            "id": "slight-1-green",
+            "src": "/photos/slight-1-green.jpg"
           },
           "min": 10,
           "max": 100,
@@ -250,8 +250,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "straight-3-green",
-            "src": "/photos/straight-3-green.jpg"
+            "id": "banana-1-green",
+            "src": "/photos/banana-1-green.jpg"
           },
           "min": 10,
           "max": 100,
@@ -271,8 +271,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "slight-1-green",
-            "src": "/photos/slight-1-green.jpg"
+            "id": "straight-2-green",
+            "src": "/photos/straight-2-green.jpg"
           },
           "min": 10,
           "max": 100,
@@ -295,8 +295,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "slight-3-green",
-            "src": "/photos/slight-3-green.jpg"
+            "id": "banana-2-green",
+            "src": "/photos/banana-2-green.jpg"
           },
           "min": 10,
           "max": 100,
@@ -316,8 +316,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "banana-1-green",
-            "src": "/photos/banana-1-green.jpg"
+            "id": "straight-3-green",
+            "src": "/photos/straight-3-green.jpg"
           },
           "min": 10,
           "max": 100,
@@ -328,8 +328,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "banana-2-green",
-            "src": "/photos/banana-2-green.jpg"
+            "id": "slight-3-green",
+            "src": "/photos/slight-3-green.jpg"
           },
           "min": 10,
           "max": 100,
@@ -373,8 +373,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "straight-2-red",
-            "src": "/photos/straight-2-red.jpg"
+            "id": "slight-1-red",
+            "src": "/photos/slight-1-red.jpg"
           },
           "min": 10,
           "max": 100,
@@ -385,8 +385,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "straight-3-red",
-            "src": "/photos/straight-3-red.jpg"
+            "id": "banana-1-red",
+            "src": "/photos/banana-1-red.jpg"
           },
           "min": 10,
           "max": 100,
@@ -406,8 +406,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "slight-1-red",
-            "src": "/photos/slight-1-red.jpg"
+            "id": "straight-2-red",
+            "src": "/photos/straight-2-red.jpg"
           },
           "min": 10,
           "max": 100,
@@ -430,8 +430,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "slight-3-red",
-            "src": "/photos/slight-3-red.jpg"
+            "id": "banana-2-red",
+            "src": "/photos/banana-2-red.jpg"
           },
           "min": 10,
           "max": 100,
@@ -451,8 +451,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "banana-1-red",
-            "src": "/photos/banana-1-red.jpg"
+            "id": "straight-3-red",
+            "src": "/photos/straight-3-red.jpg"
           },
           "min": 10,
           "max": 100,
@@ -463,8 +463,8 @@
           "type": "photo_rating",
           "required": true,
           "photo": {
-            "id": "banana-2-red",
-            "src": "/photos/banana-2-red.jpg"
+            "id": "slight-3-red",
+            "src": "/photos/slight-3-red.jpg"
           },
           "min": 10,
           "max": 100,
@@ -495,7 +495,7 @@
           "id": "Q1",
           "type": "photo_ranking",
           "required": true,
-          "shuffle": false,
+          "shuffle": true,
           "photos": [
             {
               "id": "straight-0-green",
@@ -519,7 +519,7 @@
           "id": "Q2",
           "type": "photo_ranking",
           "required": true,
-          "shuffle": false,
+          "shuffle": true,
           "photos": [
             {
               "id": "slight-0-green",
@@ -552,7 +552,7 @@
           "id": "Q3",
           "type": "photo_ranking",
           "required": true,
-          "shuffle": false,
+          "shuffle": true,
           "photos": [
             {
               "id": "banana-0-green",
@@ -576,7 +576,7 @@
           "id": "Q4",
           "type": "photo_ranking",
           "required": true,
-          "shuffle": false,
+          "shuffle": true,
           "photos": [
             {
               "id": "straight-0-red",
@@ -609,7 +609,7 @@
           "id": "Q5",
           "type": "photo_ranking",
           "required": true,
-          "shuffle": false,
+          "shuffle": true,
           "photos": [
             {
               "id": "slight-0-red",
@@ -633,7 +633,7 @@
           "id": "Q6",
           "type": "photo_ranking",
           "required": true,
-          "shuffle": false,
+          "shuffle": true,
           "photos": [
             {
               "id": "banana-0-red",

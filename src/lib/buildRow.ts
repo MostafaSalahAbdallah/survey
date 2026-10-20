@@ -6,9 +6,68 @@ import {
 } from './types';
 
 /**
- * Computes the canonical Google Sheets header columns based on survey.json.
+ * Canonical order of the 21 photo rating columns in Google Sheets.
+ * This order is preserved permanently so existing spreadsheet columns
+ * and downstream analytics dashboards never shift or break.
  */
-export function getSurveyHeaders(survey: SurveyConfig): string[] {
+export const CANONICAL_RATING_PHOTO_IDS: string[] = [
+  'straight-0',
+  'slight-0',
+  'banana-0',
+  'straight-1-green',
+  'straight-2-green',
+  'straight-3-green',
+  'slight-1-green',
+  'slight-2-green',
+  'slight-3-green',
+  'banana-1-green',
+  'banana-2-green',
+  'banana-3-green',
+  'straight-1-red',
+  'straight-2-red',
+  'straight-3-red',
+  'slight-1-red',
+  'slight-2-red',
+  'slight-3-red',
+  'banana-1-red',
+  'banana-2-red',
+  'banana-3-red',
+];
+
+/**
+ * Canonical definition of the 6 ranking questions and their 4 photos.
+ */
+export const CANONICAL_RANKING_CONFIG: { id: string; photos: string[] }[] = [
+  {
+    id: 'Q1',
+    photos: ['straight-0-green', 'straight-1-green', 'straight-2-green', 'straight-3-green'],
+  },
+  {
+    id: 'Q2',
+    photos: ['slight-0-green', 'slight-1-green', 'slight-2-green', 'slight-3-green'],
+  },
+  {
+    id: 'Q3',
+    photos: ['banana-0-green', 'banana-1-green', 'banana-2-green', 'banana-3-green'],
+  },
+  {
+    id: 'Q4',
+    photos: ['straight-0-red', 'straight-1-red', 'straight-2-red', 'straight-3-red'],
+  },
+  {
+    id: 'Q5',
+    photos: ['slight-0-red', 'slight-1-red', 'slight-2-red', 'slight-3-red'],
+  },
+  {
+    id: 'Q6',
+    photos: ['banana-0-red', 'banana-1-red', 'banana-2-red', 'banana-3-red'],
+  },
+];
+
+/**
+ * Computes the canonical Google Sheets header columns.
+ */
+export function getSurveyHeaders(survey?: SurveyConfig): string[] {
   const headers: string[] = [
     'submission_id',
     'timestamp',
@@ -21,17 +80,15 @@ export function getSurveyHeaders(survey: SurveyConfig): string[] {
     'work_experience',
   ];
 
-  for (const page of survey.pages) {
-    for (const q of page.questions) {
-      if (q.type === 'photo_rating') {
-        const ratingQ = q as PhotoRatingQuestion;
-        headers.push(ratingQ.photo.id);
-      } else if (q.type === 'photo_ranking') {
-        const rankingQ = q as PhotoRankingQuestion;
-        for (const photo of rankingQ.photos) {
-          headers.push(`${rankingQ.id}-${photo.id}`);
-        }
-      }
+  // 21 rating columns
+  for (const photoId of CANONICAL_RATING_PHOTO_IDS) {
+    headers.push(photoId);
+  }
+
+  // 24 ranking columns (4 photos per ranking question)
+  for (const q of CANONICAL_RANKING_CONFIG) {
+    for (const photoId of q.photos) {
+      headers.push(`${q.id}-${photoId}`);
     }
   }
 
@@ -41,6 +98,7 @@ export function getSurveyHeaders(survey: SurveyConfig): string[] {
 /**
  * Builds a single Google Sheets row from the submission payload.
  * Values are stored strictly in canonical English with numeric types.
+ * Maps answers invariantly by photo ID to guarantee existing sheet alignment.
  */
 export function buildRowFromAnswers(
   survey: SurveyConfig,
@@ -73,26 +131,35 @@ export function buildRowFromAnswers(
     row.push('');
   }
 
-  // Photo ratings and Photo rankings
+  // Index answers by photo ID for rating questions across all pages
+  const photoRatingAnswers: Record<string, any> = {};
   for (const page of survey.pages) {
     for (const q of page.questions) {
       if (q.type === 'photo_rating') {
         const ratingQ = q as PhotoRatingQuestion;
-        const ratingVal = answers[ratingQ.id];
-        row.push(ratingVal !== undefined && ratingVal !== '' ? Number(ratingVal) : '');
-      } else if (q.type === 'photo_ranking') {
-        const rankingQ = q as PhotoRankingQuestion;
-        const rankingArr = (answers[rankingQ.id] as string[]) || [];
-
-        for (const photo of rankingQ.photos) {
-          const rankIndex = rankingArr.indexOf(photo.id);
-          // If found in array: rank is 1-indexed (1 to 4)
-          if (rankIndex >= 0) {
-            row.push(rankIndex + 1);
-          } else {
-            row.push('');
-          }
+        if (answers[ratingQ.id] !== undefined) {
+          photoRatingAnswers[ratingQ.photo.id] = answers[ratingQ.id];
         }
+      }
+    }
+  }
+
+  // Append 21 photo ratings in canonical sequence
+  for (const photoId of CANONICAL_RATING_PHOTO_IDS) {
+    const ratingVal = photoRatingAnswers[photoId];
+    row.push(ratingVal !== undefined && ratingVal !== '' ? Number(ratingVal) : '');
+  }
+
+  // Append ranking questions in canonical sequence
+  for (const q of CANONICAL_RANKING_CONFIG) {
+    const rankingArr = (answers[q.id] as string[]) || [];
+    for (const photoId of q.photos) {
+      const rankIndex = rankingArr.indexOf(photoId);
+      // If found in array: rank is 1-indexed (1 to 4)
+      if (rankIndex >= 0) {
+        row.push(rankIndex + 1);
+      } else {
+        row.push('');
       }
     }
   }

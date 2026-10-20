@@ -25,8 +25,48 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
   // Reconstruct ordered array of ranked photo IDs from value
   const rankedIds: string[] = Array.isArray(value) ? value : [];
 
-  // Display order: fixed order from JSON
-  const displayPhotos = question.photos;
+  // Randomized display photos with session persistence
+  const [displayPhotos, setDisplayPhotos] = useState<PhotoConfig[]>(question.photos);
+
+  useEffect(() => {
+    // If shuffle is disabled in config, keep original order
+    if (question.shuffle === false) {
+      setDisplayPhotos(question.photos);
+      return;
+    }
+
+    try {
+      const storageKey = `frontal_smile_shuffle_${question.id}`;
+      const saved = typeof window !== 'undefined' ? window.sessionStorage.getItem(storageKey) : null;
+      if (saved) {
+        const savedIds: string[] = JSON.parse(saved);
+        if (Array.isArray(savedIds) && savedIds.length === question.photos.length) {
+          const photoMap = new Map(question.photos.map((p) => [p.id, p]));
+          if (savedIds.every((id) => photoMap.has(id))) {
+            setDisplayPhotos(savedIds.map((id) => photoMap.get(id)!));
+            return;
+          }
+        }
+      }
+
+      // If no saved order or mismatch, perform Fisher-Yates shuffle
+      const shuffled = [...question.photos];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.setItem(
+          storageKey,
+          JSON.stringify(shuffled.map((p) => p.id))
+        );
+      }
+      setDisplayPhotos(shuffled);
+    } catch {
+      setDisplayPhotos(question.photos);
+    }
+  }, [question.id, question.photos, question.shuffle]);
 
   const handlePhotoClick = (photoId: string) => {
     const existingIndex = rankedIds.indexOf(photoId);
@@ -66,7 +106,7 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
   return (
     <div className="w-full flex flex-col items-center">
       {/* Live status bar */}
-      <div className="w-full flex items-center justify-between mb-3 px-1 text-xs font-semibold">
+      <div className="w-full max-w-2xl flex items-center justify-between mb-3 px-1 text-xs font-semibold">
         <div className="flex items-center gap-2">
           <span className="px-3 py-1 rounded-full border border-slate-300 bg-white text-slate-900 font-bold shadow-xs transition-colors">
             {rankedOfCountText}
@@ -90,8 +130,8 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
         )}
       </div>
 
-      {/* Photo Grid: 1 column on mobile, 2 columns on tablet/desktop */}
-      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+      {/* Photo Grid: Strict 2x2 grid on both mobile and desktop */}
+      <div className="w-full max-w-2xl grid grid-cols-2 gap-2.5 sm:gap-4">
         {displayPhotos.map((photo, index) => {
           const rankIndex = rankedIds.indexOf(photo.id);
           const isRanked = rankIndex >= 0;
@@ -108,7 +148,7 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
           return (
             <div
               key={photo.id}
-              className={`group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center h-60 sm:h-auto sm:aspect-16/11 ${
+              className={`group relative rounded-xl sm:rounded-2xl overflow-hidden border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center aspect-4/3 sm:aspect-16/11 ${
                 isRanked
                   ? 'border-slate-900 bg-slate-50/50 shadow-md ring-2 ring-slate-900/20'
                   : 'border-slate-200 hover:border-slate-400 hover:shadow-xs'
@@ -119,14 +159,14 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
                 type="button"
                 onClick={() => handlePhotoClick(photo.id)}
                 aria-label={ariaLabel}
-                className="w-full h-full relative cursor-pointer focus:outline-hidden p-2"
+                className="w-full h-full relative cursor-pointer focus:outline-hidden p-1 sm:p-2"
               >
                 <Image
                   src={photoSrc}
                   alt={`Ranking photo ${photo.id}`}
                   fill
                   unoptimized
-                  sizes="(max-width: 640px) 100vw, 400px"
+                  sizes="(max-width: 640px) 50vw, 400px"
                   className="object-contain p-1 sm:p-2"
                   priority
                 />
@@ -136,14 +176,14 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
               {isRanked ? (
                 <div
                   dir="ltr"
-                  className="absolute top-2.5 left-2.5 z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-slate-900 text-white font-extrabold font-mono text-base sm:text-lg flex items-center justify-center shadow-lg shadow-black/30 ring-2 ring-white pointer-events-none animate-in zoom-in-75 duration-150"
+                  className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-slate-900 text-white font-extrabold font-mono text-sm sm:text-lg flex items-center justify-center shadow-lg shadow-black/30 ring-2 ring-white pointer-events-none animate-in zoom-in-75 duration-150"
                 >
                   {rankNumber}
                 </div>
               ) : (
                 <div
                   dir="ltr"
-                  className="absolute top-2.5 left-2.5 z-10 w-8 h-8 rounded-xl bg-white/90 border border-slate-300 text-slate-500 text-xs font-semibold flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-white/90 border border-slate-300 text-slate-500 text-xs font-semibold flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   +
                 </div>
@@ -158,7 +198,7 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
                 }}
                 aria-label={zoomText}
                 title={zoomText}
-                className="absolute top-2.5 right-2.5 z-10 p-2 rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
+                className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 z-10 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
               >
                 <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
               </button>
