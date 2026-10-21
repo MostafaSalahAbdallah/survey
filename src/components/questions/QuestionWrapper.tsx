@@ -9,9 +9,11 @@ interface QuestionWrapperProps {
   id: string;
   questionNumber?: number;
   label?: string;
+  description?: string;
   instruction?: string;
   required?: boolean;
   error?: string | null;
+  compactMobile?: boolean;
   language: Language;
   children: React.ReactNode;
 }
@@ -20,9 +22,11 @@ export const QuestionWrapper: React.FC<QuestionWrapperProps> = ({
   id,
   questionNumber,
   label,
+  description,
   instruction,
   required = false,
   error,
+  compactMobile = false,
   language,
   children,
 }) => {
@@ -32,13 +36,15 @@ export const QuestionWrapper: React.FC<QuestionWrapperProps> = ({
   return (
     <div
       id={`question-${id}`}
-      className={`scroll-mt-24 rounded-2xl p-4 sm:p-6 transition-all duration-300 border bg-white/95 ${
+      className={`scroll-mt-24 rounded-2xl ${
+        compactMobile ? 'p-2.5 sm:p-6' : 'p-4 sm:p-6'
+      } transition-all duration-300 border bg-white/95 ${
         error
           ? 'border-red-300 bg-red-50/20 shadow-md shadow-red-500/5 ring-2 ring-red-400/20'
           : 'border-[#f4d0c1] shadow-xs hover:border-slate-400'
       }`}
     >
-      <div className="mb-4">
+      <div className={compactMobile ? 'mb-2.5 sm:mb-4' : 'mb-4'}>
         <div className="flex items-center gap-2 mb-1.5">
           {questionNumber !== undefined && (
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white text-slate-900 border border-slate-300 shadow-xs">
@@ -58,8 +64,14 @@ export const QuestionWrapper: React.FC<QuestionWrapperProps> = ({
           </h2>
         )}
 
+        {description && (
+          <p className="mt-1 text-xs sm:text-sm font-semibold text-slate-700 leading-snug">
+            {description}
+          </p>
+        )}
+
         {instruction && (
-          <div className="mt-2.5 mb-1 p-3 rounded-xl bg-[#fff8f5] border border-orange-200/90 text-orange-950 text-xs sm:text-sm flex items-center gap-2.5 font-medium shadow-2xs">
+          <div className="mt-2.5 mb-1 p-2.5 sm:p-3 rounded-xl bg-[#fff8f5] border border-orange-200/90 text-orange-950 text-xs sm:text-sm flex items-center gap-2.5 font-medium shadow-2xs">
             <Maximize2 className="w-4 h-4 shrink-0 text-orange-700" />
             <span>{instruction}</span>
           </div>

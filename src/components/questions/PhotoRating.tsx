@@ -12,6 +12,7 @@ interface PhotoRatingProps {
   value: number | undefined;
   onChange: (value: number) => void;
   language: Language;
+  showMaximizeHelp?: boolean;
 }
 
 export const PhotoRating: React.FC<PhotoRatingProps> = ({
@@ -19,6 +20,7 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
   value,
   onChange,
   language,
+  showMaximizeHelp = false,
 }) => {
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const isRTL = language === 'ar';
@@ -37,27 +39,29 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
     ? `${question.photo.src}&v=crop2`
     : `${question.photo.src}?v=crop2`;
 
+  const shouldHighlightMaximize = showMaximizeHelp || Boolean(question.instruction);
+
   return (
     <div className="flex flex-col items-center w-full">
       {/* Photo Container */}
-      <div className="relative w-full max-w-xl h-60 sm:h-72 md:h-80 bg-[#fff8f5] rounded-2xl overflow-hidden border border-[#f4d0c1] shadow-xs mb-5 group">
+      <div className="relative w-full max-w-xl h-60 sm:h-72 md:h-80 bg-[#fff8f5] rounded-xl sm:rounded-2xl overflow-hidden border border-[#f4d0c1] shadow-xs mb-5 group">
         <Image
           src={photoSrc}
           alt={`Smile photo ${question.photo.id}`}
           fill
           unoptimized
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 600px, 800px"
-          className="object-contain p-2"
+          className="object-contain p-1 sm:p-2"
           priority
         />
 
         {/* Magnifier zoom button */}
-        <div className="absolute top-3 right-3 flex items-center z-10">
-          {question.instruction ? (
+        <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 flex items-center z-10">
+          {shouldHighlightMaximize ? (
             <button
               type="button"
               onClick={() => setIsZoomOpen(true)}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 bg-white/95 hover:bg-white px-3 py-2 rounded-xl border border-slate-300 shadow-md backdrop-blur-xs transition-all hover:scale-105 active:scale-95 cursor-pointer animate-pulse"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 bg-white/95 hover:bg-white px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-slate-300 shadow-md backdrop-blur-xs transition-all hover:scale-105 active:scale-95 cursor-pointer animate-pulse"
             >
               <Maximize2 className="w-3.5 h-3.5 text-black" />
               <span>{isRTL ? 'اضغط لتكبير الصورة' : 'Click to enlarge photo'}</span>
@@ -68,7 +72,7 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
               onClick={() => setIsZoomOpen(true)}
               aria-label={zoomText}
               title={zoomText}
-              className="p-2 rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
+              className="p-1.5 sm:p-2 rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
             >
               <Maximize2 className="w-4 h-4 text-black" />
             </button>

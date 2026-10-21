@@ -109,6 +109,26 @@ export const UI_STRINGS: Record<string, Record<Language, string>> = {
     en: 'Scientific Research Survey • Confidential & Anonymous',
     ar: 'استبيان بحث علمي • سرية تامة وموثقة',
   },
+  photoRatingReminder: {
+    en: 'Rate the smile attractiveness from 10 (least attractive) to 100 (most attractive).',
+    ar: 'قيّم مدى جاذبية الابتسامة من 10 (الأقل جاذبية) إلى 100 (الأكثر جاذبية).',
+  },
+  photoRankingReminder: {
+    en: 'Arrange by clicking the photos: choose your most preferred first, down to least preferred (1 to 4).',
+    ar: 'رتّب بالضغط على الصور: اختر الأكثر تفضيلاً أولاً حتى الأقل تفضيلاً (من 1 إلى 4).',
+  },
+  maximizeInstruction: {
+    en: 'You can click the button in the top-right corner of the photo to maximize its size.',
+    ar: 'يمكنك الضغط على الزر في الزاوية العلوية للصورة لتكبير حجمها وعرضها بالشاشة الكاملة.',
+  },
+  clickToEnlarge: {
+    en: 'Click to enlarge photo',
+    ar: 'اضغط لتكبير الصورة',
+  },
+  enlargeShort: {
+    en: 'Enlarge',
+    ar: 'تكبير',
+  },
 };
 
 export function getTranslation(

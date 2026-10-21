@@ -12,6 +12,7 @@ interface PhotoRankingProps {
   value: string[] | undefined; // ordered array of photo IDs: index 0 is rank 1, etc.
   onChange: (value: string[] | null) => void;
   language: Language;
+  showMaximizeHelp?: boolean;
 }
 
 export const PhotoRanking: React.FC<PhotoRankingProps> = ({
@@ -19,6 +20,7 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
   value,
   onChange,
   language,
+  showMaximizeHelp = false,
 }) => {
   const [zoomPhoto, setZoomPhoto] = useState<PhotoConfig | null>(null);
 
@@ -130,8 +132,8 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
         )}
       </div>
 
-      {/* Photo Grid: Strict 2x2 grid on both mobile and desktop */}
-      <div className="w-full max-w-2xl grid grid-cols-2 gap-2.5 sm:gap-4">
+      {/* Photo Grid: Strict 2x2 grid on both mobile and desktop with minimal gaps and maximized photos */}
+      <div className="w-full max-w-2xl grid grid-cols-2 gap-1 sm:gap-4">
         {displayPhotos.map((photo, index) => {
           const rankIndex = rankedIds.indexOf(photo.id);
           const isRanked = rankIndex >= 0;
@@ -148,18 +150,18 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
           return (
             <div
               key={photo.id}
-              className={`group relative rounded-xl sm:rounded-2xl overflow-hidden border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center aspect-4/3 sm:aspect-16/11 ${
+              className={`group relative rounded-lg sm:rounded-2xl overflow-hidden border sm:border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center aspect-square sm:aspect-16/11 ${
                 isRanked
-                  ? 'border-slate-900 bg-slate-50/50 shadow-md ring-2 ring-slate-900/20'
-                  : 'border-slate-200 hover:border-slate-400 hover:shadow-xs'
+                  ? 'border-slate-900 bg-slate-50/50 shadow-md ring-1 sm:ring-2 ring-slate-900/20'
+                  : 'border-slate-300 hover:border-slate-500 hover:shadow-xs'
               }`}
             >
-              {/* Main Photo Click Target */}
+              {/* Main Photo Click Target - ultra compact margins on mobile */}
               <button
                 type="button"
                 onClick={() => handlePhotoClick(photo.id)}
                 aria-label={ariaLabel}
-                className="w-full h-full relative cursor-pointer focus:outline-hidden p-1 sm:p-2"
+                className="w-full h-full relative cursor-pointer focus:outline-hidden p-0 sm:p-1.5"
               >
                 <Image
                   src={photoSrc}
@@ -167,7 +169,7 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
                   fill
                   unoptimized
                   sizes="(max-width: 640px) 50vw, 400px"
-                  className="object-contain p-1 sm:p-2"
+                  className="object-contain p-0.5 sm:p-1.5"
                   priority
                 />
               </button>
@@ -176,32 +178,48 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
               {isRanked ? (
                 <div
                   dir="ltr"
-                  className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-slate-900 text-white font-extrabold font-mono text-sm sm:text-lg flex items-center justify-center shadow-lg shadow-black/30 ring-2 ring-white pointer-events-none animate-in zoom-in-75 duration-150"
+                  className="absolute top-1 left-1 sm:top-2.5 sm:left-2.5 z-10 w-6 h-6 sm:w-11 sm:h-11 rounded-md sm:rounded-xl bg-slate-900 text-white font-extrabold font-mono text-xs sm:text-lg flex items-center justify-center shadow-md sm:shadow-lg shadow-black/30 ring-1 sm:ring-2 ring-white pointer-events-none animate-in zoom-in-75 duration-150"
                 >
                   {rankNumber}
                 </div>
               ) : (
                 <div
                   dir="ltr"
-                  className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-white/90 border border-slate-300 text-slate-500 text-xs font-semibold flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-1 left-1 sm:top-2.5 sm:left-2.5 z-10 w-5 h-5 sm:w-8 sm:h-8 rounded-md sm:rounded-xl bg-white/90 border border-slate-300 text-slate-500 text-[10px] sm:text-xs font-semibold flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   +
                 </div>
               )}
 
-              {/* Zoom Button: does not trigger rank click */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setZoomPhoto(photo);
-                }}
-                aria-label={zoomText}
-                title={zoomText}
-                className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 z-10 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
-              >
-                <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
-              </button>
+              {/* Zoom Button: Pulsing illustration pill on first photo if showMaximizeHelp is active */}
+              {showMaximizeHelp && index === 0 ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoomPhoto(photo);
+                  }}
+                  aria-label={zoomText}
+                  title={zoomText}
+                  className="absolute top-1 right-1 sm:top-2.5 sm:right-2.5 z-10 inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-1.5 rounded-md sm:rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300 animate-pulse text-[10px] sm:text-xs font-bold"
+                >
+                  <Maximize2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-black shrink-0" />
+                  <span>{getTranslation('enlargeShort', language)}</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoomPhoto(photo);
+                  }}
+                  aria-label={zoomText}
+                  title={zoomText}
+                  className="absolute top-1 right-1 sm:top-2.5 sm:right-2.5 z-10 p-1 sm:p-2 rounded-md sm:rounded-xl bg-white/95 hover:bg-white text-black shadow-md backdrop-blur-xs transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-slate-300"
+                >
+                  <Maximize2 className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
+                </button>
+              )}
             </div>
           );
         })}

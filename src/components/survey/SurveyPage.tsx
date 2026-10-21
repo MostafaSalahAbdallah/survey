@@ -144,7 +144,28 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
           const qNumber = questionNumberOffset + idx + 1;
           const label = q.label?.[language] || q.label?.en;
           const error = validationErrors[q.id] || null;
-          const qInstruction = 'instruction' in q ? ((q as any).instruction?.[language] || (q as any).instruction?.en) : undefined;
+
+          const isPhotoRating = q.type === 'photo_rating';
+          const isPhotoRanking = q.type === 'photo_ranking';
+
+          // Short reminder description on each question
+          const qDescription = isPhotoRating
+            ? getTranslation('photoRatingReminder', language)
+            : isPhotoRanking
+            ? getTranslation('photoRankingReminder', language)
+            : undefined;
+
+          // First question in each photo page shows maximize button illustration & banner
+          const isFirstQuestionInPage = idx === 0;
+          const showMaximizeHelp = isFirstQuestionInPage && (isPhotoRating || isPhotoRanking);
+
+          const qInstruction = showMaximizeHelp
+            ? ('instruction' in q && (q as any).instruction?.[language]
+                ? (q as any).instruction[language] || (q as any).instruction?.en
+                : getTranslation('maximizeInstruction', language))
+            : ('instruction' in q
+                ? (q as any).instruction?.[language] || (q as any).instruction?.en
+                : undefined);
 
           return (
             <QuestionWrapper
@@ -152,7 +173,9 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
               id={q.id}
               questionNumber={qNumber}
               label={label}
+              description={qDescription}
               instruction={qInstruction}
+              compactMobile={isPhotoRanking}
               required={q.required}
               error={error}
               language={language}
@@ -190,6 +213,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
                   value={answers[q.id] as number | undefined}
                   onChange={(val) => setAnswer(q.id, val)}
                   language={language}
+                  showMaximizeHelp={showMaximizeHelp}
                 />
               )}
 
@@ -199,6 +223,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
                   value={answers[q.id] as string[] | undefined}
                   onChange={(val) => setAnswer(q.id, val)}
                   language={language}
+                  showMaximizeHelp={showMaximizeHelp}
                 />
               )}
             </QuestionWrapper>

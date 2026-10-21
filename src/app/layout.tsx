@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { SecurityGuard } from '@/components/common/SecurityGuard';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -40,6 +41,7 @@ export default function RootLayout({
         className="min-h-screen bg-[#ffe5d9] text-slate-800 antialiased font-sans"
         suppressHydrationWarning
       >
+        <SecurityGuard />
         {children}
       </body>
     </html>
