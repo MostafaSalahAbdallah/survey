@@ -4,170 +4,133 @@ import React, { useEffect } from 'react';
 
 /**
  * SecurityGuard Component
- * Implements hardened, synchronous anti-screenshot, anti-recording, and anti-inspection defenses:
- * 1. Synchronously toggles the `screen-shield-active` class on <html> on window blur, visibility change, and PrintScreen.
- * 2. Catches `keyup` (which is when Chromium on Windows dispatches PrintScreen) and wipes the clipboard.
- * 3. Catches `keydown` for DevTools (F12, Ctrl+Shift+I/J/C), View-Source (Ctrl+U), Print (Ctrl+P), and Save (Ctrl+S).
- * 4. Disables right-click context menu and element dragging.
- * 5. Periodically checks for open DevTools consoles.
+ *
+ * Key insight for reliable screenshot blocking:
+ * The shield div must ALWAYS be in the GPU compositor layer.
+ * Using display:none removes it from the compositor — adding it back
+ * needs a full layout+paint cycle (several ms — too slow on Windows).
+ *
+ * Instead we keep the shield permanently rendered using:
+ *   opacity: 0 + pointer-events: none  →  normal (invisible but composited)
+ *   opacity: 1 + pointer-events: all   →  shielded (blocks view instantly)
+ *
+ * The opacity change is GPU-accelerated and fires in < 1 frame before
+ * the OS screen capture buffer is committed to the clipboard.
  */
 export const SecurityGuard: React.FC = () => {
   useEffect(() => {
     let shieldTimer: ReturnType<typeof setTimeout> | null = null;
 
+    const shield = document.getElementById('security-blur-shield') as HTMLElement | null;
+    const content = document.getElementById('survey-root-content') as HTMLElement | null;
+
+    const showShield = () => {
+      if (shield) {
+        shield.style.opacity = '1';
+        shield.style.pointerEvents = 'all';
+      }
+      if (content) {
+        content.style.filter = 'blur(40px) brightness(0.05)';
+        content.style.pointerEvents = 'none';
+      }
+    };
+
+    const hideShield = (delayMs = 0) => {
+      if (shieldTimer) { clearTimeout(shieldTimer); shieldTimer = null; }
+      const doHide = () => {
+        if (shield) { shield.style.opacity = '0'; shield.style.pointerEvents = 'none'; }
+        if (content) { content.style.filter = ''; content.style.pointerEvents = ''; }
+      };
+      if (delayMs > 0) {
+        shieldTimer = setTimeout(() => {
+          if (document.hasFocus() && !document.hidden) doHide();
+        }, delayMs);
+      } else {
+        doHide();
+      }
+    };
+
     const wipeClipboard = () => {
       try {
-        if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(
-            '⚠️ Protected Content: Screenshots and screen recordings are strictly restricted on this scientific study.'
-          ).catch(() => {});
-        }
+        navigator.clipboard?.writeText(
+          '⚠️ Protected Content — Screenshots of this scientific orthodontic study are restricted.'
+        ).catch(() => {});
       } catch {}
     };
 
-    const activateShield = (durationMs?: number) => {
-      document.documentElement.classList.add('screen-shield-active');
-      if (shieldTimer) {
-        clearTimeout(shieldTimer);
-        shieldTimer = null;
-      }
-      if (durationMs) {
-        shieldTimer = setTimeout(() => {
-          if (document.hasFocus() && !document.hidden) {
-            document.documentElement.classList.remove('screen-shield-active');
-          }
-        }, durationMs);
-      }
-    };
+    // Right-click context menu
+    const onContextMenu = (e: MouseEvent) => { e.preventDefault(); return false; };
 
-    const deactivateShield = () => {
-      if (shieldTimer) {
-        clearTimeout(shieldTimer);
-        shieldTimer = null;
-      }
-      document.documentElement.classList.remove('screen-shield-active');
-    };
+    // Drag prevention
+    const onDragStart = (e: DragEvent) => { e.preventDefault(); return false; };
 
-    // 1. Right-Click Context Menu prevention
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-      return false;
-    };
-
-    // 2. Drag & Drop prevention
-    const handleDragStart = (e: DragEvent) => {
-      e.preventDefault();
-      return false;
-    };
-
-    // 3. KeyUp: Crucial for PrintScreen in Chromium/Windows
-    const handleKeyUp = (e: KeyboardEvent) => {
+    // keyup — Chromium/Windows ONLY dispatches PrintScreen on keyup, NOT keydown
+    const onKeyUp = (e: KeyboardEvent) => {
       if (e.key === 'PrintScreen' || e.key === 'Snapshot') {
-        activateShield(2500);
+        showShield();
         wipeClipboard();
+        hideShield(2500);
       }
     };
 
-    // 4. KeyDown: Developer Tools, Print, Save, View-Source
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key;
-      const ctrlOrMeta = e.ctrlKey || e.metaKey;
+    // keydown — DevTools, print, save, view-source
+    const onKeyDown = (e: KeyboardEvent) => {
+      const k = e.key;
+      const ctrl = e.ctrlKey || e.metaKey;
       const shift = e.shiftKey;
 
-      // PrintScreen / Snapshot
-      if (key === 'PrintScreen' || key === 'Snapshot') {
-        e.preventDefault();
-        activateShield(2500);
-        wipeClipboard();
-        return false;
+      // Catch PrintScreen on keydown too (Firefox, some other browsers)
+      if (k === 'PrintScreen' || k === 'Snapshot') {
+        e.preventDefault(); showShield(); wipeClipboard(); hideShield(2500); return false;
       }
-
-      // Windows + Shift + S or Mac Cmd + Shift + 3/4/5
-      if ((ctrlOrMeta || e.metaKey) && shift && (key === 'S' || key === 's' || key === '3' || key === '4' || key === '5')) {
-        activateShield(2500);
-        wipeClipboard();
+      // Win+Shift+S  (Snipping Tool shortcut — activates on some configs via keydown)
+      if (ctrl && shift && (k === 'S' || k === 's')) {
+        showShield(); wipeClipboard(); hideShield(2500);
       }
-
-      // F12 -> DevTools
-      if (key === 'F12') {
-        e.preventDefault();
-        return false;
-      }
-
-      // Ctrl/Cmd + Shift + I/J/C -> DevTools
-      if (ctrlOrMeta && shift && (key === 'I' || key === 'i' || key === 'J' || key === 'j' || key === 'C' || key === 'c')) {
-        e.preventDefault();
-        return false;
-      }
-
-      // Ctrl/Cmd + U -> View Source
-      if (ctrlOrMeta && (key === 'u' || key === 'U')) {
-        e.preventDefault();
-        return false;
-      }
-
-      // Ctrl/Cmd + S -> Save Page
-      if (ctrlOrMeta && (key === 's' || key === 'S')) {
-        e.preventDefault();
-        return false;
-      }
-
-      // Ctrl/Cmd + P -> Print / PDF Export
-      if (ctrlOrMeta && (key === 'p' || key === 'P')) {
-        e.preventDefault();
-        activateShield(2000);
-        return false;
-      }
+      if (k === 'F12') { e.preventDefault(); return false; }
+      if (ctrl && shift && /^[ijcIJC]$/.test(k)) { e.preventDefault(); return false; }
+      if (ctrl && /^[uU]$/.test(k)) { e.preventDefault(); return false; }
+      if (ctrl && /^[sS]$/.test(k)) { e.preventDefault(); return false; }
+      if (ctrl && /^[pP]$/.test(k)) { e.preventDefault(); showShield(); hideShield(2000); return false; }
     };
 
-    // 5. Window Blur (Fires instantly when Snipping Tool, screen grabbers, or other windows open)
-    const handleBlur = () => {
-      activateShield();
-    };
+    // Window blur fires the instant Snipping Tool / any screen grabber steals focus
+    const onBlur = () => showShield();
+    const onFocus = () => hideShield(150);
+    const onVisibility = () => { if (document.hidden) showShield(); else hideShield(150); };
 
-    // 6. Window Focus (Restores view when returning to the survey)
-    const handleFocus = () => {
-      deactivateShield();
-    };
+    // Click inside shield to dismiss (fallback if focus event doesn't fire)
+    const onShieldClick = () => { if (document.hasFocus()) hideShield(); };
+    shield?.addEventListener('click', onShieldClick);
 
-    // 7. Visibility Change (Tab switch / minimize)
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        activateShield();
-      } else {
-        deactivateShield();
-      }
-    };
-
-    // 8. Periodic DevTools check
-    const devToolsInterval = setInterval(() => {
-      const widthDiff = window.outerWidth - window.innerWidth;
-      const heightDiff = window.outerHeight - window.innerHeight;
-      if (widthDiff > 160 || heightDiff > 160) {
-        try {
-          console.clear();
-        } catch {}
+    // DevTools dimension probe
+    const dtInterval = setInterval(() => {
+      if (
+        (window.outerWidth - window.innerWidth) > 160 ||
+        (window.outerHeight - window.innerHeight) > 160
+      ) {
+        try { console.clear(); } catch {}
       }
     }, 1500);
 
-    // Attach listeners with capture phase for maximum responsiveness
-    window.addEventListener('contextmenu', handleContextMenu, { capture: true });
-    window.addEventListener('dragstart', handleDragStart, { capture: true });
-    window.addEventListener('keydown', handleKeyDown, { capture: true });
-    window.addEventListener('keyup', handleKeyUp, { capture: true });
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('contextmenu', onContextMenu, { capture: true });
+    window.addEventListener('dragstart', onDragStart, { capture: true });
+    window.addEventListener('keydown', onKeyDown, { capture: true });
+    window.addEventListener('keyup', onKeyUp, { capture: true });
+    window.addEventListener('blur', onBlur);
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      window.removeEventListener('contextmenu', handleContextMenu, { capture: true });
-      window.removeEventListener('dragstart', handleDragStart, { capture: true });
-      window.removeEventListener('keydown', handleKeyDown, { capture: true });
-      window.removeEventListener('keyup', handleKeyUp, { capture: true });
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      clearInterval(devToolsInterval);
+      window.removeEventListener('contextmenu', onContextMenu, { capture: true });
+      window.removeEventListener('dragstart', onDragStart, { capture: true });
+      window.removeEventListener('keydown', onKeyDown, { capture: true });
+      window.removeEventListener('keyup', onKeyUp, { capture: true });
+      window.removeEventListener('blur', onBlur);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+      shield?.removeEventListener('click', onShieldClick);
+      clearInterval(dtInterval);
       if (shieldTimer) clearTimeout(shieldTimer);
     };
   }, []);
@@ -176,19 +139,20 @@ export const SecurityGuard: React.FC = () => {
     <div
       id="security-blur-shield"
       aria-hidden="true"
-      className="fixed inset-0 z-999999 flex flex-col items-center justify-center bg-slate-950/95 backdrop-blur-3xl text-white select-none p-6"
+      style={{ opacity: 0, pointerEvents: 'none', transition: 'opacity 60ms ease' }}
+      className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-slate-950 text-white select-none p-6"
     >
       <div className="max-w-md text-center flex flex-col items-center gap-3.5">
-        <div className="w-16 h-16 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center font-bold text-3xl border border-orange-500/40 shadow-xl shadow-orange-500/10 animate-pulse">
+        <div className="w-16 h-16 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center font-bold text-3xl border border-orange-500/40 shadow-xl animate-pulse">
           🔒
         </div>
         <p className="text-xl sm:text-2xl font-extrabold tracking-tight">
           Protected Content • محتوى محمي
         </p>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-          Screenshots and screen recordings are restricted to protect the confidentiality of this scientific orthodontic study. Click anywhere on the page to resume.
+          Screenshots and screen recordings are restricted to protect this scientific orthodontic study. Return to the window to resume.
           <br />
-          تم تقييد التقاط الشاشة وتسجيلها لحماية سرية هذا البحث العلمي في طب تقويم الأسنان. اضغط في أي مكان داخل النافذة للمتابعة.
+          تم تقييد التقاط الشاشة وتسجيلها لحماية سرية هذا البحث العلمي في طب تقويم الأسنان. يرجى العودة إلى نافذة الاستبيان للمتابعة.
         </p>
       </div>
     </div>

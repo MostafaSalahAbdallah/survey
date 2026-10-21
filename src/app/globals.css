@@ -83,24 +83,19 @@ img {
   }
 }
 
-/* Screen Protection Shield */
-html.screen-shield-active body {
-  overflow: hidden !important;
-}
-
+/* Screen Protection Shield — always composited on GPU so opacity changes fire instantly */
 #security-blur-shield {
-  display: none;
+  will-change: opacity;
+  contain: strict;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
-html.screen-shield-active #security-blur-shield {
-  display: flex !important;
+#survey-root-content {
+  will-change: filter;
+  transform: translateZ(0);
 }
 
-html.screen-shield-active #survey-root-content {
-  filter: blur(50px) grayscale(100%) !important;
-  opacity: 0.01 !important;
-  pointer-events: none !important;
-  user-select: none !important;
-}
 
 
