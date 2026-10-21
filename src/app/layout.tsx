@@ -42,7 +42,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <SecurityGuard />
-        {children}
+        <div id="survey-root-content" className="w-full min-h-screen flex flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -83,3 +83,24 @@ img {
   }
 }
 
+/* Screen Protection Shield */
+html.screen-shield-active body {
+  overflow: hidden !important;
+}
+
+#security-blur-shield {
+  display: none;
+}
+
+html.screen-shield-active #security-blur-shield {
+  display: flex !important;
+}
+
+html.screen-shield-active #survey-root-content {
+  filter: blur(50px) grayscale(100%) !important;
+  opacity: 0.01 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+

@@ -51,9 +51,17 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
           fill
           unoptimized
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 600px, 800px"
-          className="object-contain p-1 sm:p-2"
+          className="object-contain p-1 sm:p-2 pointer-events-none select-none"
           priority
         />
+
+        {/* Subtle Security Watermark */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-10 rotate-[-12deg] select-none text-slate-900 font-black text-xs sm:text-sm tracking-widest uppercase z-1"
+        >
+          Confidential • Orthodontic Study
+        </div>
 
         {/* Magnifier zoom button */}
         <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 flex items-center z-10">
