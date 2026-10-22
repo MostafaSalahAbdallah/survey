@@ -6,6 +6,8 @@ const STORAGE_KEYS = {
   CURRENT_PAGE: 'frontal_smile_page',
   START_TIME: 'frontal_smile_start_time',
   SUBMISSION_ID: 'frontal_smile_sub_id',
+  INSTRUCTIONS_ACCEPTED: 'frontal_smile_accepted_intro',
+  COMPLETED_TIMERS: 'frontal_smile_completed_timers',
 };
 
 function isBrowser(): boolean {
@@ -22,6 +24,39 @@ export function getStoredLanguage(): Language | null {
 export function setStoredLanguage(lang: Language): void {
   if (!isBrowser()) return;
   window.sessionStorage.setItem(STORAGE_KEYS.LANGUAGE, lang);
+}
+
+export function getStoredInstructionsAccepted(): boolean {
+  if (!isBrowser()) return false;
+  return window.sessionStorage.getItem(STORAGE_KEYS.INSTRUCTIONS_ACCEPTED) === 'true';
+}
+
+export function setStoredInstructionsAccepted(accepted: boolean): void {
+  if (!isBrowser()) return;
+  window.sessionStorage.setItem(STORAGE_KEYS.INSTRUCTIONS_ACCEPTED, String(accepted));
+}
+
+export function getStoredCompletedTimers(): number[] {
+  if (!isBrowser()) return [];
+  try {
+    const raw = window.sessionStorage.getItem(STORAGE_KEYS.COMPLETED_TIMERS);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function setStoredCompletedTimer(pageIndex: number): void {
+  if (!isBrowser()) return;
+  try {
+    const current = getStoredCompletedTimers();
+    if (!current.includes(pageIndex)) {
+      current.push(pageIndex);
+      window.sessionStorage.setItem(STORAGE_KEYS.COMPLETED_TIMERS, JSON.stringify(current));
+    }
+  } catch (e) {
+    console.error('Failed to save completed timer', e);
+  }
 }
 
 export function getStoredAnswers(): SurveyAnswers {
@@ -75,6 +110,8 @@ export function clearSurveySession(): void {
     window.sessionStorage.removeItem(STORAGE_KEYS.ANSWERS);
     window.sessionStorage.removeItem(STORAGE_KEYS.CURRENT_PAGE);
     window.sessionStorage.removeItem(STORAGE_KEYS.START_TIME);
+    window.sessionStorage.removeItem(STORAGE_KEYS.INSTRUCTIONS_ACCEPTED);
+    window.sessionStorage.removeItem(STORAGE_KEYS.COMPLETED_TIMERS);
     // Clear question shuffle cache
     for (let i = 1; i <= 6; i++) {
       window.sessionStorage.removeItem(`frontal_smile_shuffle_Q${i}`);

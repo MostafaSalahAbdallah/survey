@@ -1,13 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { SurveyConfig } from '@/lib/types';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSurvey } from '@/hooks/useSurvey';
+import {
+  getStoredInstructionsAccepted,
+  setStoredInstructionsAccepted,
+  getStoredPageIndex,
+} from '@/lib/storage';
 import { LanguageModal } from '@/components/common/LanguageModal';
 import { Header } from '@/components/common/Header';
 import { ProgressBar } from '@/components/common/ProgressBar';
 import { SurveyPage } from '@/components/survey/SurveyPage';
+import { SurveyInstructions } from '@/components/survey/SurveyInstructions';
 import { ThankYou } from '@/components/survey/ThankYou';
 
 interface SurveyShellProps {
@@ -16,6 +22,7 @@ interface SurveyShellProps {
 
 export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
   const { language, setLanguage, isInitialized } = useLanguage();
+  const [hasAcceptedInstructions, setHasAcceptedInstructions] = useState<boolean>(false);
 
   const {
     answers,
@@ -36,8 +43,29 @@ export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
     submissionId,
   } = useSurvey({ survey, language });
 
+  // Initialize instructions acceptance from storage
+  useEffect(() => {
+    if (isInitialized) {
+      const accepted = getStoredInstructionsAccepted();
+      const savedPage = getStoredPageIndex();
+      if (accepted || savedPage > 0) {
+        setHasAcceptedInstructions(true);
+      }
+    }
+  }, [isInitialized]);
+
+  const handleAcceptInstructions = useCallback(() => {
+    setHasAcceptedInstructions(true);
+    setStoredInstructionsAccepted(true);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, []);
+
   // Automatically scroll to top of window whenever the active page changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       document.documentElement.scrollTop = 0;
@@ -70,6 +98,11 @@ export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
       <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-6 sm:py-8 pb-32">
         {isCompleted && language ? (
           <ThankYou language={language} submissionId={submissionId} />
+        ) : language && !hasAcceptedInstructions ? (
+          <SurveyInstructions
+            language={language}
+            onAccept={handleAcceptInstructions}
+          />
         ) : (
           language && (
             <SurveyPage
@@ -99,7 +132,7 @@ export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
           currentPageIndex={currentPageIndex}
           totalPages={totalPages}
           language={language}
-          hidden={isCompleted || showLanguageModal}
+          hidden={isCompleted || showLanguageModal || !hasAcceptedInstructions}
         />
       )}
     </div>

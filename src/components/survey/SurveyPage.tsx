@@ -21,7 +21,10 @@ import {
   Send,
   Loader2,
   AlertTriangle,
+  Clock,
 } from 'lucide-react';
+import { usePageTimer } from '@/hooks/usePageTimer';
+import { PageTimerBanner } from '@/components/common/PageTimerBanner';
 
 interface SurveyPageProps {
   survey: SurveyConfig;
@@ -115,6 +118,14 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
       ? survey.meta.photoRankingInstruction[language] || survey.meta.photoRankingInstruction.en
       : null;
 
+  const totalPages = survey.pages.length;
+  const {
+    timeLeft,
+    totalDuration,
+    isTimerActive,
+    isTimerComplete,
+  } = usePageTimer({ pageIndex, totalPages });
+
   return (
     <div className="w-full flex flex-col gap-6">
       {/* Page Header */}
@@ -133,6 +144,15 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
           </div>
         )}
       </div>
+
+      {/* Focus & Accuracy Timer Banner */}
+      <PageTimerBanner
+        timeLeft={timeLeft}
+        totalDuration={totalDuration}
+        isTimerActive={isTimerActive}
+        isTimerComplete={isTimerComplete}
+        language={language}
+      />
 
       {/* Questions List */}
       <div className="flex flex-col gap-6">
@@ -262,13 +282,18 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
           <button
             type="button"
             onClick={onSubmit}
-            disabled={!isCurrentPageValid || isSubmitting}
+            disabled={!isCurrentPageValid || isSubmitting || isTimerActive}
             className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-200 text-white disabled:text-slate-400 font-bold text-sm sm:text-base transition-all duration-200 shadow-md shadow-emerald-700/20 disabled:shadow-none cursor-pointer disabled:cursor-not-allowed active:scale-98"
           >
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
                 <span>{getTranslation('submitting', language)}</span>
+              </>
+            ) : isTimerActive ? (
+              <>
+                <Clock className="w-4 h-4 animate-pulse" />
+                <span>{getTranslation('submitWithTimer', language, { seconds: timeLeft })}</span>
               </>
             ) : (
               <>
@@ -288,14 +313,34 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
                 document.body.scrollTop = 0;
               }
             }}
-            disabled={!isCurrentPageValid}
+            disabled={!isCurrentPageValid || isTimerActive}
             className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 text-white disabled:text-slate-400 font-bold text-sm sm:text-base transition-all duration-200 shadow-md shadow-emerald-600/20 disabled:shadow-none cursor-pointer disabled:cursor-not-allowed active:scale-98"
           >
-            <span>{getTranslation('next', language)}</span>
-            {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            {isTimerActive ? (
+              <>
+                <Clock className="w-4 h-4 animate-pulse" />
+                <span>{getTranslation('nextWithTimer', language, { seconds: timeLeft })}</span>
+              </>
+            ) : (
+              <>
+                <span>{getTranslation('next', language)}</span>
+                {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              </>
+            )}
           </button>
         )}
       </div>
+
+      {/* Helper hint if navigation is currently locked */}
+      {(isTimerActive || !isCurrentPageValid) && (
+        <div className="flex justify-end -mt-8 pb-8">
+          <p className="text-xs text-slate-500 font-medium">
+            {isTimerActive
+              ? getTranslation('waitTimerMessage', language)
+              : getTranslation('completeRequiredMessage', language)}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
