@@ -21,9 +21,14 @@ import { validatePage, validateAllAnswers } from '@/lib/validate';
 interface UseSurveyProps {
   survey: SurveyConfig;
   language: Language | null;
+  features?: {
+    skipTimer?: boolean;
+    skipRequired?: boolean;
+  };
 }
 
-export function useSurvey({ survey, language }: UseSurveyProps) {
+export function useSurvey({ survey, language, features }: UseSurveyProps) {
+  const skipRequired = features?.skipRequired ?? false;
   const [answers, setAnswersState] = useState<SurveyAnswers>({});
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [startTime, setStartTime] = useState<number>(0);
@@ -89,9 +94,9 @@ export function useSurvey({ survey, language }: UseSurveyProps) {
   // Check if current page is valid (live check for Next button disabled state)
   const isCurrentPageValid = useMemo(() => {
     if (!currentPage) return false;
-    const errors = validatePage(currentPage, answers);
+    const errors = validatePage(currentPage, answers, { skipRequired });
     return Object.keys(errors).length === 0;
-  }, [currentPage, answers]);
+  }, [currentPage, answers, skipRequired]);
 
   const scrollToQuestion = (questionId: string) => {
     const el = document.getElementById(`question-${questionId}`);
@@ -103,15 +108,13 @@ export function useSurvey({ survey, language }: UseSurveyProps) {
   const handleNext = useCallback(() => {
     if (!currentPage) return;
 
-    /* REVERT ME:
-    const errors = validatePage(currentPage, answers);
+    const errors = validatePage(currentPage, answers, { skipRequired });
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
       const firstErrorId = Object.keys(errors)[0];
       scrollToQuestion(firstErrorId);
       return;
     }
-    */
 
     setValidationErrors({});
     if (currentPageIndex < totalPages - 1) {
@@ -127,7 +130,7 @@ export function useSurvey({ survey, language }: UseSurveyProps) {
         }, 10);
       }
     }
-  }, [currentPage, answers, currentPageIndex, totalPages]);
+  }, [currentPage, answers, currentPageIndex, totalPages, skipRequired]);
 
   const handleBack = useCallback(() => {
     if (currentPageIndex > 0) {
@@ -151,12 +154,12 @@ export function useSurvey({ survey, language }: UseSurveyProps) {
     if (isSubmitting || !language) return;
 
     // Validate entire survey
-    const { isValid, errors } = validateAllAnswers(survey, answers);
+    const { isValid, errors } = validateAllAnswers(survey, answers, { skipRequired });
     if (!isValid) {
       setValidationErrors(errors);
       // Find the first page with an error
       for (let i = 0; i < survey.pages.length; i++) {
-        const pErrors = validatePage(survey.pages[i], answers);
+        const pErrors = validatePage(survey.pages[i], answers, { skipRequired });
         if (Object.keys(pErrors).length > 0) {
           setCurrentPageIndex(i);
           setStoredPageIndex(i);

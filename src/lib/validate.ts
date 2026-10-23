@@ -5,6 +5,11 @@ import {
   PageConfig,
   PhotoRankingQuestion,
 } from './types';
+import { getEnvFeatures } from './envConfig';
+
+export interface ValidationOptions {
+  skipRequired?: boolean;
+}
 
 /**
  * Checks if a question should be displayed based on showIf conditions.
@@ -31,17 +36,29 @@ export function isQuestionVisible(
  */
 export function validateQuestion(
   question: QuestionConfig,
-  answers: SurveyAnswers
+  answers: SurveyAnswers,
+  options?: ValidationOptions
 ): string | null {
   const visible = isQuestionVisible(question, answers);
   if (!visible) {
     return null; // Invisible questions are always valid
   }
 
+  const shouldSkipRequired = options?.skipRequired ?? getEnvFeatures().skipRequired;
   const val = answers[question.id];
 
+  // If skipping required fields is enabled, empty/unanswered questions are valid
+  if (shouldSkipRequired) {
+    if (val === undefined || val === null || val === '') {
+      return null;
+    }
+    if (question.type === 'photo_ranking' && (!Array.isArray(val) || val.length === 0)) {
+      return null;
+    }
+  }
+
   // Required check
-  if (question.required) {
+  if (question.required && !shouldSkipRequired) {
     if (val === undefined || val === null || val === '') {
       return 'required';
     }
@@ -51,11 +68,13 @@ export function validateQuestion(
 
   switch (question.type) {
     case 'short_text': {
-      if (typeof val !== 'string') return 'required';
+      if (typeof val !== 'string') return shouldSkipRequired ? null : 'required';
       const trimmed = val.trim();
-      if (question.required && trimmed.length === 0) return 'required';
+      if (trimmed.length === 0) {
+        return shouldSkipRequired ? null : 'required';
+      }
       if (question.minLength && trimmed.length < question.minLength) {
-        return 'minChars';
+        return shouldSkipRequired ? null : 'minChars';
       }
       if (question.maxLength && trimmed.length > question.maxLength) {
         return 'required';
@@ -64,40 +83,52 @@ export function validateQuestion(
     }
 
     case 'single_choice': {
-      if (typeof val !== 'string') return 'required';
+      if (typeof val !== 'string' || val === '') {
+        return shouldSkipRequired ? null : 'required';
+      }
       const validOption = question.options.some((opt) => opt.value === val);
-      if (!validOption) return 'required';
+      if (!validOption) return shouldSkipRequired ? null : 'required';
       return null;
     }
 
     case 'number': {
+      if (val === undefined || val === null || val === '') {
+        return null;
+      }
       const num = typeof val === 'number' ? val : Number(val);
-      if (isNaN(num)) return 'required';
+      if (isNaN(num)) return shouldSkipRequired ? null : 'required';
       if (question.min !== undefined && num < question.min) return 'required';
       if (question.max !== undefined && num > question.max) return 'required';
       return null;
     }
 
     case 'photo_rating': {
+      if (val === undefined || val === null || val === '') {
+        return null;
+      }
       const num = typeof val === 'number' ? val : Number(val);
-      if (isNaN(num)) return 'required';
+      if (isNaN(num)) return shouldSkipRequired ? null : 'required';
       if (num < question.min || num > question.max) return 'required';
       if ((num - question.min) % question.step !== 0) return 'required';
       return null;
     }
 
     case 'photo_ranking': {
-      if (!Array.isArray(val)) return 'required';
+      if (!Array.isArray(val) || val.length === 0) {
+        return shouldSkipRequired ? null : 'required';
+      }
       const rankingQ = question as PhotoRankingQuestion;
       const expectedCount = rankingQ.photos.length;
-      if (val.length !== expectedCount) return 'required';
+      if (val.length !== expectedCount) {
+        return shouldSkipRequired ? null : 'required';
+      }
 
       const validPhotoIds = new Set(rankingQ.photos.map((p) => p.id));
       const seen = new Set<string>();
 
       for (const id of val) {
         if (!validPhotoIds.has(id) || seen.has(id)) {
-          return 'required';
+          return shouldSkipRequired ? null : 'required';
         }
         seen.add(id);
       }
@@ -115,12 +146,13 @@ export function validateQuestion(
  */
 export function validatePage(
   page: PageConfig,
-  answers: SurveyAnswers
+  answers: SurveyAnswers,
+  options?: ValidationOptions
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 
   for (const q of page.questions) {
-    const error = validateQuestion(q, answers);
+    const error = validateQuestion(q, answers, options);
     if (error) {
       errors[q.id] = error;
     }
@@ -134,12 +166,13 @@ export function validatePage(
  */
 export function validateAllAnswers(
   survey: SurveyConfig,
-  answers: SurveyAnswers
+  answers: SurveyAnswers,
+  options?: ValidationOptions
 ): { isValid: boolean; errors: Record<string, string> } {
   const errors: Record<string, string> = {};
 
   for (const page of survey.pages) {
-    const pageErrors = validatePage(page, answers);
+    const pageErrors = validatePage(page, answers, options);
     Object.assign(errors, pageErrors);
   }
 

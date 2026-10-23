@@ -4,6 +4,7 @@ import { SurveyConfig, SubmitPayload } from '@/lib/types';
 import { validateAllAnswers } from '@/lib/validate';
 import { buildRowFromAnswers } from '@/lib/buildRow';
 import { appendSurveyResponse } from '@/lib/sheets';
+import { getEnvFeatures } from '@/lib/envConfig';
 
 const survey = surveyData as unknown as SurveyConfig;
 
@@ -19,8 +20,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Re-validate answers server-side
-    const { isValid, errors } = validateAllAnswers(survey, payload.answers);
+    // 1. Re-validate answers server-side (respects SKIP_REQUIRED from env/Vercel)
+    const { skipRequired } = getEnvFeatures();
+    const { isValid, errors } = validateAllAnswers(survey, payload.answers, { skipRequired });
     if (!isValid) {
       return NextResponse.json(
         {

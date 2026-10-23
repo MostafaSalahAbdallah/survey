@@ -5,8 +5,14 @@ import {
   getStoredCompletedTimers,
   setStoredCompletedTimer,
 } from '@/lib/storage';
+import { getClientFeatures } from '@/lib/envConfig';
 
-export function getPageTimerDuration(pageIndex: number, totalPages: number): number {
+export function getPageTimerDuration(
+  pageIndex: number,
+  totalPages: number,
+  skipTimer?: boolean
+): number {
+  if (skipTimer) return 0;
   if (pageIndex === 0) return 0; // Page 1 (Demographics): No timer
   if (pageIndex >= totalPages - 3) return 30; // Last 3 pages: 30 seconds
   return 21; // Page 2 and so on: 21 seconds
@@ -15,10 +21,12 @@ export function getPageTimerDuration(pageIndex: number, totalPages: number): num
 interface UsePageTimerOptions {
   pageIndex: number;
   totalPages: number;
+  skipTimer?: boolean;
 }
 
-export function usePageTimer({ pageIndex, totalPages }: UsePageTimerOptions) {
-  const totalDuration = getPageTimerDuration(pageIndex, totalPages);
+export function usePageTimer({ pageIndex, totalPages, skipTimer }: UsePageTimerOptions) {
+  const shouldSkipTimer = skipTimer ?? getClientFeatures().skipTimer;
+  const totalDuration = getPageTimerDuration(pageIndex, totalPages, shouldSkipTimer);
 
   // Check if this page was already completed in the session
   const isAlreadyCompleted = () => {

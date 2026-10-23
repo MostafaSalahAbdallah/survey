@@ -18,11 +18,16 @@ import {
 interface SurveyInstructionsProps {
   language: Language;
   onAccept: () => void;
+  features?: {
+    skipTimer?: boolean;
+    skipRequired?: boolean;
+  };
 }
 
 export const SurveyInstructions: React.FC<SurveyInstructionsProps> = ({
   language,
   onAccept,
+  features,
 }) => {
   const [hasAcknowledged, setHasAcknowledged] = useState(false);
   const isRTL = language === 'ar';
@@ -40,18 +45,26 @@ export const SurveyInstructions: React.FC<SurveyInstructionsProps> = ({
       desc: getTranslation('ruleDataDesc', language),
       color: 'text-blue-600 bg-blue-50 border-blue-200',
     },
-    {
-      icon: Clock,
-      title: getTranslation('ruleTimerTitle', language),
-      desc: getTranslation('ruleTimerDesc', language),
-      color: 'text-amber-600 bg-amber-50 border-amber-200',
-    },
-    {
-      icon: FileCheck2,
-      title: getTranslation('ruleMandatoryTitle', language),
-      desc: getTranslation('ruleMandatoryDesc', language),
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
-    },
+    ...(!features?.skipTimer
+      ? [
+          {
+            icon: Clock,
+            title: getTranslation('ruleTimerTitle', language),
+            desc: getTranslation('ruleTimerDesc', language),
+            color: 'text-amber-600 bg-amber-50 border-amber-200',
+          },
+        ]
+      : []),
+    ...(!features?.skipRequired
+      ? [
+          {
+            icon: FileCheck2,
+            title: getTranslation('ruleMandatoryTitle', language),
+            desc: getTranslation('ruleMandatoryDesc', language),
+            color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+          },
+        ]
+      : []),
     {
       icon: ZoomIn,
       title: getTranslation('ruleZoomTitle', language),

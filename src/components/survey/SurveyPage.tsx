@@ -42,6 +42,10 @@ interface SurveyPageProps {
   onSubmit: () => void;
   isSubmitting: boolean;
   submitError: string | null;
+  features?: {
+    skipTimer?: boolean;
+    skipRequired?: boolean;
+  };
 }
 
 export const SurveyPage: React.FC<SurveyPageProps> = ({
@@ -60,6 +64,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
   onSubmit,
   isSubmitting,
   submitError,
+  features,
 }) => {
   const isRTL = language === 'ar';
 
@@ -119,12 +124,14 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
       : null;
 
   const totalPages = survey.pages.length;
+  const skipTimer = features?.skipTimer ?? false;
+  const skipRequired = features?.skipRequired ?? false;
   const {
     timeLeft,
     totalDuration,
     isTimerActive,
     isTimerComplete,
-  } = usePageTimer({ pageIndex, totalPages });
+  } = usePageTimer({ pageIndex, totalPages, skipTimer });
 
   return (
     <div className="w-full flex flex-col gap-6">
@@ -196,7 +203,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
               description={qDescription}
               instruction={qInstruction}
               compactMobile={isPhotoRanking}
-              required={q.required}
+              required={skipRequired ? false : q.required}
               error={error}
               language={language}
             >

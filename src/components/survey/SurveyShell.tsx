@@ -15,14 +15,21 @@ import { ProgressBar } from '@/components/common/ProgressBar';
 import { SurveyPage } from '@/components/survey/SurveyPage';
 import { SurveyInstructions } from '@/components/survey/SurveyInstructions';
 import { ThankYou } from '@/components/survey/ThankYou';
+import { getClientFeatures, AppFeatures } from '@/lib/envConfig';
 
 interface SurveyShellProps {
   survey: SurveyConfig;
+  initialFeatures?: Partial<AppFeatures>;
 }
 
-export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
+export const SurveyShell: React.FC<SurveyShellProps> = ({ survey, initialFeatures }) => {
   const { language, setLanguage, isInitialized } = useLanguage();
   const [hasAcceptedInstructions, setHasAcceptedInstructions] = useState<boolean>(false);
+  const [features, setFeatures] = useState<AppFeatures>(() => getClientFeatures(initialFeatures));
+
+  useEffect(() => {
+    setFeatures(getClientFeatures(initialFeatures));
+  }, [initialFeatures]);
 
   const {
     answers,
@@ -41,7 +48,7 @@ export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
     submitError,
     isCompleted,
     submissionId,
-  } = useSurvey({ survey, language });
+  } = useSurvey({ survey, language, features });
 
   // Initialize instructions acceptance from storage
   useEffect(() => {
@@ -102,6 +109,7 @@ export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
           <SurveyInstructions
             language={language}
             onAccept={handleAcceptInstructions}
+            features={features}
           />
         ) : (
           language && (
@@ -121,6 +129,7 @@ export const SurveyShell: React.FC<SurveyShellProps> = ({ survey }) => {
               onSubmit={handleSubmit}
               isSubmitting={isSubmitting}
               submitError={submitError}
+              features={features}
             />
           )
         )}
