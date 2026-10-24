@@ -9,6 +9,7 @@ import { Maximize2 } from 'lucide-react';
 
 interface PhotoRatingProps {
   question: PhotoRatingQuestion;
+  questionNumber?: number;
   value: number | undefined;
   onChange: (value: number) => void;
   language: Language;
@@ -17,6 +18,7 @@ interface PhotoRatingProps {
 
 export const PhotoRating: React.FC<PhotoRatingProps> = ({
   question,
+  questionNumber,
   value,
   onChange,
   language,
@@ -44,14 +46,14 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
   return (
     <div className="flex flex-col items-center w-full">
       {/* Photo Container */}
-      <div className="relative w-full max-w-xl h-60 sm:h-72 md:h-80 bg-[#fff8f5] rounded-xl sm:rounded-2xl overflow-hidden border border-[#f4d0c1] shadow-xs mb-5 group">
+      <div className="relative w-full max-w-3xl lg:max-w-4xl h-72 sm:h-96 md:h-[440px] lg:h-[480px] bg-[#fff8f5] rounded-2xl overflow-hidden border-2 border-[#f4d0c1] shadow-md mb-6 group transition-all">
         <Image
           src={photoSrc}
           alt={`Smile photo ${question.photo.id}`}
           fill
           unoptimized
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 600px, 800px"
-          className="object-contain p-1 sm:p-2 pointer-events-none select-none"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 800px, 1200px"
+          className="object-contain p-2 sm:p-3 pointer-events-none select-none"
           priority
         />
 
@@ -61,6 +63,12 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
           className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-10 rotate-[-12deg] select-none text-slate-900 font-black text-xs sm:text-sm tracking-widest uppercase z-1"
         >
           Confidential • Orthodontic Study
+        </div>
+
+        {/* Question Tag on/next to the photo */}
+        <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/95 text-white text-xs sm:text-sm font-extrabold shadow-lg border border-white/20 backdrop-blur-xs select-none">
+          <span className="w-2 h-2 rounded-full bg-orange-400" />
+          <span>Question {questionNumber !== undefined ? `${questionNumber}` : ''}</span>
         </div>
 
         {/* Magnifier zoom button */}
@@ -89,7 +97,7 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
       </div>
 
       {/* Rating Scale: RTL for Arabic (10 on right to 100 on left), LTR for English */}
-      <div className="w-full max-w-2xl" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="w-full max-w-3xl lg:max-w-4xl" dir={isRTL ? 'rtl' : 'ltr'}>
         {/* Scale Endpoint Labels */}
         <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-2 px-1">
           <span className="text-slate-600 font-mono">{leastText}</span>

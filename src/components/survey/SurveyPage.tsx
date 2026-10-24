@@ -169,11 +169,17 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
           }
 
           const qNumber = questionNumberOffset + idx + 1;
-          const label = q.label?.[language] || q.label?.en;
-          const error = validationErrors[q.id] || null;
-
           const isPhotoRating = q.type === 'photo_rating';
           const isPhotoRanking = q.type === 'photo_ranking';
+
+          const defaultLabel = isPhotoRating
+            ? (language === 'ar' ? 'قيّم جاذبية الابتسامة' : 'Rate Smile Attractiveness')
+            : isPhotoRanking
+            ? (language === 'ar' ? 'رتّب الابتسامات حسب تفضيلك' : 'Rank Smiles by Preference')
+            : undefined;
+
+          const label = q.label?.[language] || q.label?.en || defaultLabel;
+          const error = validationErrors[q.id] || null;
 
           // Short reminder description on each question
           const qDescription = isPhotoRating
@@ -237,6 +243,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
               {q.type === 'photo_rating' && (
                 <PhotoRating
                   question={q as any}
+                  questionNumber={qNumber}
                   value={answers[q.id] as number | undefined}
                   onChange={(val) => setAnswer(q.id, val)}
                   language={language}
@@ -247,6 +254,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
               {q.type === 'photo_ranking' && (
                 <PhotoRanking
                   question={q as any}
+                  questionNumber={qNumber}
                   value={answers[q.id] as string[] | undefined}
                   onChange={(val) => setAnswer(q.id, val)}
                   language={language}

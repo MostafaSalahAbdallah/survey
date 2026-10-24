@@ -45,27 +45,28 @@ export const QuestionWrapper: React.FC<QuestionWrapperProps> = ({
       }`}
     >
       <div className={compactMobile ? 'mb-2.5 sm:mb-4' : 'mb-4'}>
-        <div className="flex items-center gap-2 mb-1.5">
+        <div className="flex items-center flex-wrap gap-2.5 mb-2.5">
           {questionNumber !== undefined && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white text-slate-900 border border-slate-300 shadow-xs">
-              {questionWord} {questionNumber}
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs sm:text-sm font-extrabold bg-slate-900 text-white shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+              Question {questionNumber}
             </span>
           )}
           {required && (
-            <span className="text-xs font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+            <span className="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/70">
               * {getTranslation('required', language)}
             </span>
           )}
         </div>
 
         {label && (
-          <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug tracking-tight">
             {label}
           </h2>
         )}
 
         {description && (
-          <p className="mt-1 text-xs sm:text-sm font-semibold text-slate-700 leading-snug">
+          <p className="mt-1.5 text-sm sm:text-base font-bold text-slate-700 leading-snug">
             {description}
           </p>
         )}

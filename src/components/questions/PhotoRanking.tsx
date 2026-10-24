@@ -9,6 +9,7 @@ import { Maximize2, RotateCcw } from 'lucide-react';
 
 interface PhotoRankingProps {
   question: PhotoRankingQuestion;
+  questionNumber?: number;
   value: string[] | undefined; // ordered array of photo IDs: index 0 is rank 1, etc.
   onChange: (value: string[] | null) => void;
   language: Language;
@@ -17,6 +18,7 @@ interface PhotoRankingProps {
 
 export const PhotoRanking: React.FC<PhotoRankingProps> = ({
   question,
+  questionNumber,
   value,
   onChange,
   language,
@@ -108,8 +110,14 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
   return (
     <div className="w-full flex flex-col items-center">
       {/* Live status bar */}
-      <div className="w-full max-w-2xl flex items-center justify-between mb-3 px-1 text-xs font-semibold">
+      <div className="w-full max-w-3xl lg:max-w-4xl flex items-center justify-between mb-3 px-1 text-xs font-semibold">
         <div className="flex items-center gap-2">
+          {questionNumber !== undefined && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-900 text-white shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+              Question {questionNumber}
+            </span>
+          )}
           <span className="px-3 py-1 rounded-full border border-slate-300 bg-white text-slate-900 font-bold shadow-xs transition-colors">
             {rankedOfCountText}
           </span>
@@ -132,8 +140,8 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
         )}
       </div>
 
-      {/* Photo Grid: Strict 2x2 grid on both mobile and desktop with minimal gaps and maximized photos */}
-      <div className="w-full max-w-2xl grid grid-cols-2 gap-1 sm:gap-4">
+      {/* Photo Grid: Enlarged 2x2 grid with high resolution photos */}
+      <div className="w-full max-w-3xl lg:max-w-4xl grid grid-cols-2 gap-2.5 sm:gap-4 lg:gap-5">
         {displayPhotos.map((photo, index) => {
           const rankIndex = rankedIds.indexOf(photo.id);
           const isRanked = rankIndex >= 0;
@@ -150,7 +158,7 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
           return (
             <div
               key={photo.id}
-              className={`group relative rounded-lg sm:rounded-2xl overflow-hidden border sm:border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center aspect-square sm:aspect-16/11 ${
+              className={`group relative rounded-xl sm:rounded-2xl overflow-hidden border sm:border-2 transition-all duration-200 bg-[#fff8f5] flex flex-col items-center justify-center aspect-4/3 sm:aspect-16/11 min-h-[170px] sm:min-h-[250px] md:min-h-[300px] ${
                 isRanked
                   ? 'border-slate-900 bg-slate-50/50 shadow-md ring-1 sm:ring-2 ring-slate-900/20'
                   : 'border-slate-300 hover:border-slate-500 hover:shadow-xs'
@@ -168,8 +176,8 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
                   alt={`Ranking photo ${photo.id}`}
                   fill
                   unoptimized
-                  sizes="(max-width: 640px) 50vw, 400px"
-                  className="object-contain p-0.5 sm:p-1.5 pointer-events-none select-none"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 500px, 700px"
+                  className="object-contain p-1 sm:p-2 pointer-events-none select-none"
                   priority
                 />
 

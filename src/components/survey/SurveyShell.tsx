@@ -102,7 +102,7 @@ export const SurveyShell: React.FC<SurveyShellProps> = ({ survey, initialFeature
       {language && <Header meta={survey.meta} language={language} />}
 
       {/* 3. Main Content Container */}
-      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-6 sm:py-8 pb-32">
+      <main className="flex-1 w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8 pb-32">
         {isCompleted && language ? (
           <ThankYou language={language} submissionId={submissionId} />
         ) : language && !hasAcceptedInstructions ? (
