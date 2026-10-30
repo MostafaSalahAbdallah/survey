@@ -148,14 +148,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
         )}
         {pageInstruction && (
           <div className="mt-3 p-3.5 rounded-xl bg-[#fff8f5] border border-slate-300 text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
-            <p>{pageInstruction}</p>
-            {isPhotoRatingPage && (
-              <p className="mt-2 text-amber-950 font-bold italic">
-                {language === 'ar'
-                  ? 'يرجى ملاحظة أن التقييم يجب أن يركز على الابتسامة نفسها وليس على السيدة.'
-                  : 'Please note: The rating should focus on the smile itself, not the woman.'}
-              </p>
-            )}
+            {pageInstruction}
           </div>
         )}
       </div>
@@ -208,14 +201,6 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
                 ? (q as any).instruction?.[language] || (q as any).instruction?.en
                 : undefined);
 
-          const focusNotice = isPhotoRating ? (
-            <span>
-              {language === 'ar'
-                ? 'تنبيه: يجب أن يركز التقييم على الابتسامة نفسها وليس على السيدة.'
-                : 'Note: The rating should focus on the smile itself, not the woman.'}
-            </span>
-          ) : undefined;
-
           return (
             <QuestionWrapper
               key={q.id}
@@ -224,7 +209,6 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
               label={label}
               description={qDescription}
               instruction={qInstruction}
-              focusNotice={focusNotice}
               compactMobile={isPhotoRanking}
               required={skipRequired ? false : q.required}
               error={error}

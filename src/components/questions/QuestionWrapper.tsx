@@ -11,7 +11,6 @@ interface QuestionWrapperProps {
   label?: string;
   description?: string;
   instruction?: string;
-  focusNotice?: React.ReactNode;
   required?: boolean;
   error?: string | null;
   compactMobile?: boolean;
@@ -25,7 +24,6 @@ export const QuestionWrapper: React.FC<QuestionWrapperProps> = ({
   label,
   description,
   instruction,
-  focusNotice,
   required = false,
   error,
   compactMobile = false,
@@ -71,12 +69,6 @@ export const QuestionWrapper: React.FC<QuestionWrapperProps> = ({
           <p className="mt-1.5 text-sm sm:text-base font-bold text-slate-700 leading-snug">
             {description}
           </p>
-        )}
-
-        {focusNotice && (
-          <div className="mt-2 text-xs sm:text-sm text-amber-950 bg-amber-50/90 border border-amber-300/80 px-3 py-1.5 rounded-xl font-bold italic inline-block shadow-2xs">
-            {focusNotice}
-          </div>
         )}
 
         {instruction && (

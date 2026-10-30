@@ -91,7 +91,7 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
 
       {/* Notice: Rating should focus on the smile itself, not the woman */}
       <div className="w-full max-w-3xl lg:max-w-4xl mb-3.5 px-3.5 py-2 rounded-xl bg-amber-50/90 border border-amber-300/80 text-amber-950 text-xs sm:text-sm text-center shadow-2xs">
-        <span className="font-bold italic">
+        <span className="font-bold italic underline underline-offset-4 decoration-amber-700">
           {isRTL
             ? 'تنبيه: يجب أن يركز التقييم على الابتسامة نفسها وليس على السيدة.'
             : 'Note: The rating should focus on the smile itself, not the woman.'}
