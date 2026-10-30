@@ -57,13 +57,6 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
           priority
         />
 
-        {/* Subtle Security Watermark */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-10 rotate-[-12deg] select-none text-slate-900 font-black text-xs sm:text-sm tracking-widest uppercase z-1"
-        >
-          Confidential • Orthodontic Study
-        </div>
 
         {/* Question Tag on/next to the photo */}
         <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/95 text-white text-xs sm:text-sm font-extrabold shadow-lg border border-white/20 backdrop-blur-xs select-none">
@@ -94,6 +87,15 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
             </button>
           )}
         </div>
+      </div>
+
+      {/* Notice: Rating should focus on the smile itself, not the woman */}
+      <div className="w-full max-w-3xl lg:max-w-4xl mb-3.5 px-3.5 py-2 rounded-xl bg-amber-50/90 border border-amber-300/80 text-amber-950 text-xs sm:text-sm text-center shadow-2xs">
+        <span className="font-bold italic">
+          {isRTL
+            ? 'تنبيه: يجب أن يركز التقييم على الابتسامة نفسها وليس على السيدة.'
+            : 'Note: The rating should focus on the smile itself, not the woman.'}
+        </span>
       </div>
 
       {/* Rating Scale: RTL for Arabic (10 on right to 100 on left), LTR for English */}

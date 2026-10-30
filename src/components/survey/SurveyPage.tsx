@@ -116,12 +116,13 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
 
   const pageTitle = page.title?.[language] || page.title?.en;
   const pageDesc = page.description?.[language] || page.description?.en;
-  const pageInstruction =
-    page.questions.some((q) => q.type === 'photo_rating')
-      ? survey.meta.photoRatingInstruction[language] || survey.meta.photoRatingInstruction.en
-      : page.questions.some((q) => q.type === 'photo_ranking')
-      ? survey.meta.photoRankingInstruction[language] || survey.meta.photoRankingInstruction.en
-      : null;
+  const isPhotoRatingPage = page.questions.some((q) => q.type === 'photo_rating');
+  const isPhotoRankingPage = page.questions.some((q) => q.type === 'photo_ranking');
+  const pageInstruction = isPhotoRatingPage
+    ? survey.meta.photoRatingInstruction[language] || survey.meta.photoRatingInstruction.en
+    : isPhotoRankingPage
+    ? survey.meta.photoRankingInstruction[language] || survey.meta.photoRankingInstruction.en
+    : null;
 
   const totalPages = survey.pages.length;
   const skipTimer = features?.skipTimer ?? false;
@@ -147,7 +148,14 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
         )}
         {pageInstruction && (
           <div className="mt-3 p-3.5 rounded-xl bg-[#fff8f5] border border-slate-300 text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
-            {pageInstruction}
+            <p>{pageInstruction}</p>
+            {isPhotoRatingPage && (
+              <p className="mt-2 text-amber-950 font-bold italic">
+                {language === 'ar'
+                  ? 'يرجى ملاحظة أن التقييم يجب أن يركز على الابتسامة نفسها وليس على السيدة.'
+                  : 'Please note: The rating should focus on the smile itself, not the woman.'}
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -200,6 +208,14 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
                 ? (q as any).instruction?.[language] || (q as any).instruction?.en
                 : undefined);
 
+          const focusNotice = isPhotoRating ? (
+            <span>
+              {language === 'ar'
+                ? 'تنبيه: يجب أن يركز التقييم على الابتسامة نفسها وليس على السيدة.'
+                : 'Note: The rating should focus on the smile itself, not the woman.'}
+            </span>
+          ) : undefined;
+
           return (
             <QuestionWrapper
               key={q.id}
@@ -208,6 +224,7 @@ export const SurveyPage: React.FC<SurveyPageProps> = ({
               label={label}
               description={qDescription}
               instruction={qInstruction}
+              focusNotice={focusNotice}
               compactMobile={isPhotoRanking}
               required={skipRequired ? false : q.required}
               error={error}

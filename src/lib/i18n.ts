@@ -113,6 +113,10 @@ export const UI_STRINGS: Record<string, Record<Language, string>> = {
     en: 'Rate the smile attractiveness from 10 (least attractive) to 100 (most attractive).',
     ar: 'قيّم مدى جاذبية الابتسامة من 10 (الأقل جاذبية) إلى 100 (الأكثر جاذبية).',
   },
+  ratingSmileFocusNotice: {
+    en: 'Note: The rating should focus on the smile itself, not the woman.',
+    ar: 'تنبيه: يجب أن يركز التقييم على الابتسامة نفسها وليس على السيدة.',
+  },
   photoRankingReminder: {
     en: 'Arrange by clicking the photos: choose your most preferred first, down to least preferred (1 to 4).',
     ar: 'رتّب بالضغط على الصور: اختر الأكثر تفضيلاً أولاً حتى الأقل تفضيلاً (من 1 إلى 4).',
@@ -151,8 +155,8 @@ export const UI_STRINGS: Record<string, Record<Language, string>> = {
     ar: '١. طبيعة الأسئلة ومراحل الاستبيان',
   },
   ruleStructureDesc: {
-    en: 'The questionnaire consists of 3 stages: (1) General background information, (2) Individual smile rating sets (evaluating attractiveness on a 10 to 100 scale), and (3) Comparative smile ranking sets (ordering 4 smile variants from 1st most preferred to 4th least preferred).',
-    ar: 'يتكون الاستبيان من ٣ مراحل: (١) معلومات عامة تمهيدية، (٢) مجموعات تقييم الابتسامات المنفردة (تحديد درجة الجاذبية على مقياس من 10 إلى 100)، و(٣) مجموعات الترتيب المقارن (ترتيب 4 ابتسامات تنازلياً من الأكثر تفضيلاً رقم 1 إلى الأقل تفضيلاً رقم 4).',
+    en: 'The questionnaire consists of 3 stages: (1) General background information, (2) Individual smile rating sets (evaluating attractiveness on a 10 to 100 scale — note: the rating should focus on the smile itself, not the woman), and (3) Comparative smile ranking sets (ordering 4 smile photos from 1st most preferred to 4th least preferred).',
+    ar: 'يتكون الاستبيان من ٣ مراحل: (١) معلومات عامة تمهيدية، (٢) مجموعات تقييم الابتسامات المنفردة (تحديد درجة الجاذبية على مقياس من 10 إلى 100 — تنبيه: يجب أن يركز التقييم على الابتسامة نفسها وليس على السيدة)، و(٣) مجموعات الترتيب المقارن (ترتيب 4 ابتسامات تنازلياً من الأكثر تفضيلاً رقم 1 إلى الأقل تفضيلاً رقم 4).',
   },
   ruleDataTitle: {
     en: '2. Personal & Professional Data Collection',

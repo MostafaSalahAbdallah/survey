@@ -181,13 +181,6 @@ export const PhotoRanking: React.FC<PhotoRankingProps> = ({
                   priority
                 />
 
-                {/* Subtle Security Watermark */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-10 rotate-[-12deg] select-none text-slate-900 font-black text-[9px] sm:text-xs tracking-wider uppercase z-1"
-                >
-                  Confidential
-                </div>
               </button>
 
               {/* Rank Badge: ALWAYS Western digits and high contrast */}
