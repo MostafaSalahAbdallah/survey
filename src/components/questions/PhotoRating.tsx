@@ -93,8 +93,8 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
       <div className="w-full max-w-3xl lg:max-w-4xl mb-3.5 px-3.5 py-2 rounded-xl bg-amber-50/90 border border-amber-300/80 text-amber-950 text-xs sm:text-sm text-center shadow-2xs">
         <span className="font-bold italic underline underline-offset-4 decoration-amber-700">
           {isRTL
-            ? 'تنبيه: يجب أن يركز التقييم على الابتسامة نفسها وليس على السيدة.'
-            : 'Note: The rating should focus on the smile itself, not the woman.'}
+            ? 'تنبيه: يجب أن يركز التقييم على الابتسامة نفسها.'
+            : 'Note: The rating should focus on the smile itself.'}
         </span>
       </div>
 
@@ -122,11 +122,10 @@ export const PhotoRating: React.FC<PhotoRatingProps> = ({
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => onChange(score)}
-                className={`relative flex items-center justify-center h-12 sm:h-14 rounded-xl font-bold font-mono text-sm sm:text-base transition-all duration-200 cursor-pointer min-w-[44px] ${
-                  isSelected
+                className={`relative flex items-center justify-center h-12 sm:h-14 rounded-xl font-bold font-mono text-sm sm:text-base transition-all duration-200 cursor-pointer min-w-[44px] ${isSelected
                     ? 'bg-[#F97316] text-white shadow-md shadow-[#F97316]/30 scale-105 ring-2 ring-[#F97316] ring-offset-2 z-10'
                     : 'bg-white text-slate-800 border-2 border-slate-200 hover:border-[#F97316] hover:bg-orange-50/60 hover:text-[#F97316]'
-                }`}
+                  }`}
               >
                 {score}
               </button>
